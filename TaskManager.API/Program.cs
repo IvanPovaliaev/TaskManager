@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TaskManager.API.Models.Data;
 
 namespace TaskManager.API
 {
@@ -9,6 +12,8 @@ namespace TaskManager.API
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<ApplicationContext>(options => options.UseSqlServer(connection));
 
             // Add services to the container.
 
@@ -21,13 +26,12 @@ namespace TaskManager.API
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
-            {
+            {                
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
