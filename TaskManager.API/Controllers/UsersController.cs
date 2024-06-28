@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.API.Models;
 using TaskManager.API.Models.Data;
@@ -26,5 +27,8 @@ namespace TaskManager.API.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet("test")]
+        public IActionResult TestApi() => Ok("Hello Word!");
     }
 }
