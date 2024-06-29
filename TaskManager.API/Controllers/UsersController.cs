@@ -21,7 +21,6 @@ namespace TaskManager.API.Controllers
 
         [HttpGet("test")]
         public IActionResult TestApi() => Ok("Hello Word!");
-
         [HttpPost("create")]
         public IActionResult CreateUser([FromBody] UserModel userModel)
         {
@@ -73,11 +72,7 @@ namespace TaskManager.API.Controllers
             return NotFound();            
         }
         [HttpGet]
-        public async Task<IEnumerable<UserModel>> GetUsers()
-        {
-            return await _db.Users.Select(u => u.ToDto()).ToListAsync();
-        }
-
+        public async Task<IEnumerable<UserModel>> GetUsers() => await _db.Users.Select(u => u.ToDto()).ToListAsync();
         [HttpPost("create/all")]
         public async Task<IActionResult> CreateMultipleUsers([FromBody] IEnumerable<UserModel> usersModels)
         {
