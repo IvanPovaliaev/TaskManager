@@ -33,6 +33,18 @@ namespace TaskManager.API.Models
             RegistrationDate = DateTime.Now;
             Role = role;
         }
+        public User(UserModel model)
+        {
+            Id = model.Id;
+            FirstName = model.FirstName;
+            Surname = model.Surname;
+            Email = model.Email;
+            Password = model.Password;
+            Phone = model.Phone;
+            Photo = model.Photo;
+            RegistrationDate = model.RegistrationDate;
+            Role = model.Role;
+        }
 
         public UserModel ToDto()
         {
@@ -45,7 +57,7 @@ namespace TaskManager.API.Models
                 Password = this.Password,
                 Phone = this.Phone,
                 Photo = this.Photo,
-                RegistrationDate = RegistrationDate,
+                RegistrationDate = this.RegistrationDate,
                 Role = this.Role
             };
         }
