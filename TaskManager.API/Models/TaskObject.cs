@@ -2,7 +2,7 @@
 
 namespace TaskManager.API.Models
 {
-    public class TaskModel : CommonObject
+    public class TaskObject : CommonObject
     {
         public int Id { get; set; }
         public DateTime StartDate { get; set; }
@@ -11,7 +11,7 @@ namespace TaskManager.API.Models
         public int DeskId { get; set; }
         public Desk Desk { get; set; }
         public string Column { get; set; }
-        public int CreatorId { get; set; }
+        public int? CreatorId { get; set; }
         public User Creator { get; set;}
         public int? ExecutorId { get; set; }
     }

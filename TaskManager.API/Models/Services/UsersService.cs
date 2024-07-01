@@ -1,22 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using TaskManager.API.Models.Abstractions;
 using TaskManager.API.Models.Data;
 using TaskManager.Common.Models;
 
 namespace TaskManager.API.Models.Services
 {
-    public class UserService : ICommonService<UserModel>
+    public class UsersService : AbstractService, ICommonService<UserModel>
     {
         private readonly ApplicationContext _db;
-        public UserService(ApplicationContext db) => _db = db;
+        public UsersService(ApplicationContext db) => _db = db;
 
         public Tuple<string, string> GetUserLoginPassFromBasicAuth(HttpRequest request)
         {
@@ -35,10 +32,14 @@ namespace TaskManager.API.Models.Services
             }
             return new Tuple<string, string>(userName, userPass);
         }
+
         public User GetUser(string login, string password)
         {
             return _db.Users.FirstOrDefault(u => u.Email == login && u.Password == password);
         }
+
+        public User GetUser(string login) => _db.Users.FirstOrDefault(u => u.Email == login);
+
         public ClaimsIdentity GetIdentity(string username, string password)
         {
             var currentUser = GetUser(username, password);
@@ -61,6 +62,7 @@ namespace TaskManager.API.Models.Services
             }
             return null;
         }
+
         public bool Create(UserModel model)
         {
             return DoAction(() =>
@@ -71,6 +73,7 @@ namespace TaskManager.API.Models.Services
                 _db.SaveChanges();
             });         
         }
+
         public bool Update(int id, UserModel model)
         {
             var user = _db.Users.FirstOrDefault(u => u.Id == id);
@@ -92,6 +95,7 @@ namespace TaskManager.API.Models.Services
             }
             return false;
         }
+
         public bool Remove(int id)
         {
             var user = _db.Users.FirstOrDefault(u => u.Id == id);
@@ -102,6 +106,7 @@ namespace TaskManager.API.Models.Services
             }
             return false;
         }
+
         public bool CreateMultipleUsers(IEnumerable<UserModel> usersModels)
         {
             return DoAction(() =>
@@ -110,18 +115,6 @@ namespace TaskManager.API.Models.Services
                 _db.Users.AddRange(newUsers);
                 _db.SaveChangesAsync();                
             });
-        }
-        private bool DoAction(Action action)
-        {
-            try
-            {
-                action();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
         }
     }
 }

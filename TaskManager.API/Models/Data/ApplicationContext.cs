@@ -12,7 +12,7 @@ namespace TaskManager.API.Models.Data
         public DbSet<ProjectAdmin> ProjectAdmins { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Desk> Desks { get; set; }
-        public DbSet<TaskModel> Tasks { get; set; }
+        public DbSet<TaskObject> Tasks { get; set; }
 
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {

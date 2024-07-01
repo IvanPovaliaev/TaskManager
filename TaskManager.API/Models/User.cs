@@ -17,7 +17,7 @@ namespace TaskManager.API.Models
         public byte[]? Photo { get; set; }
         public List<Project> Projects { get; set; } = new List<Project>();
         public List<Desk> Desks { get; set; } = new List<Desk>();
-        public List<TaskModel> Tasks { get; set; } = new List<TaskModel>();
+        public List<TaskObject> Tasks { get; set; } = new List<TaskObject>();
         public UserRole Role { get; set; }
 
         public User() { }
