@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,15 +12,17 @@ using TaskManager.API.Models.Data;
 using TaskManager.Common.Models;
 
 namespace TaskManager.API.Controllers
-{
+{    
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly ApplicationContext _db;
         public UsersController(ApplicationContext db) => _db = db;
 
         [HttpGet("test")]
+        [AllowAnonymous]
         public IActionResult TestApi() => Ok("Hello Word!");
         [HttpPost("create")]
         public IActionResult CreateUser([FromBody] UserModel userModel)

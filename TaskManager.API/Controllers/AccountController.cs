@@ -9,6 +9,8 @@ using TaskManager.API.Models.Services;
 using System.IdentityModel.Tokens.Jwt;
 using TaskManager.API.Models;
 using Microsoft.IdentityModel.Tokens;
+using TaskManager.Common.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TaskManager.API.Controllers
 {
@@ -23,7 +25,7 @@ namespace TaskManager.API.Controllers
             _db = db;
             _userService = new UserService(db);
         }
-
+        [Authorize]
         [HttpGet("info")]
         public IActionResult GetCurrentUserInfo()
         {
@@ -32,7 +34,6 @@ namespace TaskManager.API.Controllers
 
             return user is null ? NotFound() : Ok(user.ToDto());
         }
-
         [HttpPost("token")]
         public IActionResult GetToken()
         {
@@ -58,6 +59,32 @@ namespace TaskManager.API.Controllers
                 username = identity.Name
             };
             return Ok(response);
+        }
+        [Authorize]
+        [HttpPatch("update")]
+        public IActionResult UpdateUser([FromBody] UserModel userModel)
+        {
+            if (userModel != null)
+            {
+                var userName = HttpContext.User.Identity.Name;
+
+                var user = _db.Users.FirstOrDefault(u => u.Email == userName);
+
+                if (user != null)
+                {
+                    user.FirstName = userModel.FirstName;
+                    user.Surname = userModel.Surname;
+                    user.Password = userModel.Password;
+                    user.Phone = userModel.Phone;
+                    user.Photo = userModel.Photo;
+
+                    _db.Users.Update(user);
+                    _db.SaveChanges();
+                    return Ok();
+                }
+                return NotFound();
+            }
+            return BadRequest();
         }
     }
 }
