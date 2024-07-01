@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TaskManager.API.Models;
 using TaskManager.API.Models.Data;
+using TaskManager.API.Models.Services;
 using TaskManager.Common.Models;
 
 namespace TaskManager.API.Controllers
@@ -19,73 +20,42 @@ namespace TaskManager.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ApplicationContext _db;
-        public UsersController(ApplicationContext db) => _db = db;
+        private readonly UserService _userService;
+        public UsersController(ApplicationContext db)
+        {
+            _db = db;
+            _userService = new UserService(db);
+        }
 
         [HttpGet("test")]
         [AllowAnonymous]
         public IActionResult TestApi() => Ok("Hello Word!");
-        [HttpPost("create")]
+        [HttpPost]
         public IActionResult CreateUser([FromBody] UserModel userModel)
         {
-            if (userModel != null)
-            {
-                var newUser = new User(userModel.FirstName, userModel.Surname, userModel.Email,
-                    userModel.Password, userModel.Role, userModel.Phone, userModel.Photo);
-                _db.Users.Add(newUser);
-                _db.SaveChanges();
-                return Ok();
-            }
+            if (userModel != null)           
+                return _userService.Create(userModel) ? Ok() : NotFound();
+
             return BadRequest();
         }
-        [HttpPatch("update/{id}")]
+        [HttpPatch("{id}")]
         public IActionResult UpdateUser(int id, [FromBody] UserModel userModel)
         {
             if (userModel != null)
-            {
-                var user = _db.Users.FirstOrDefault(u => u.Id == id);
+                return _userService.Update(id, userModel) ? Ok() : NotFound();
 
-                if (user != null)
-                {
-                    user.FirstName = userModel.FirstName;
-                    user.Surname = userModel.Surname;
-                    user.Password = userModel.Password;
-                    user.Phone = userModel.Phone;
-                    user.Photo = userModel.Photo;
-                    user.Role = userModel.Role;
-                    user.Email = userModel.Email;
-                    _db.Users.Update(user);
-                    _db.SaveChanges();
-                    return Ok();
-                }
-                return NotFound();
-            }
             return BadRequest();
         }
-        [HttpDelete("remove/{id}")]
-        public IActionResult RemoveUser(int id)
-        {
-            var user = _db.Users.FirstOrDefault(u => u.Id == id);
-
-            if (user != null)
-            {
-                _db.Users.Remove(user);
-                _db.SaveChanges();
-                return Ok();
-            }
-            return NotFound();            
-        }
-        [HttpGet]
+        [HttpDelete("{id}")]
+        public IActionResult RemoveUser(int id) => _userService.Remove(id) ? Ok() : NotFound();
+        [HttpGet()]
         public async Task<IEnumerable<UserModel>> GetUsers() => await _db.Users.Select(u => u.ToDto()).ToListAsync();
-        [HttpPost("create/all")]
+        [HttpPost("all")]
         public async Task<IActionResult> CreateMultipleUsers([FromBody] IEnumerable<UserModel> usersModels)
         {
             if (!usersModels.IsNullOrEmpty())
-            {
-                var newUsers = usersModels.Select(userM => new User(userM));
-                _db.Users.AddRange(newUsers);
-                await _db.SaveChangesAsync();
-                return Ok();
-            }
+                return _userService.CreateMultipleUsers(usersModels) ? Ok() : NotFound();
+
             return BadRequest();
         }
     }

@@ -20,11 +20,13 @@ namespace TaskManager.API.Controllers
     {
         private readonly ApplicationContext _db;
         private readonly UserService _userService;
+
         public AccountController(ApplicationContext db)
         {
             _db = db;
             _userService = new UserService(db);
         }
+
         [Authorize]
         [HttpGet("info")]
         public IActionResult GetCurrentUserInfo()

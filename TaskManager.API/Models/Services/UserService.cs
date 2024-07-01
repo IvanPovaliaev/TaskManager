@@ -1,15 +1,19 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
+using TaskManager.API.Models.Abstractions;
 using TaskManager.API.Models.Data;
+using TaskManager.Common.Models;
 
 namespace TaskManager.API.Models.Services
 {
-    public class UserService
+    public class UserService : ICommonService<UserModel>
     {
         private readonly ApplicationContext _db;
         public UserService(ApplicationContext db) => _db = db;
@@ -31,12 +35,10 @@ namespace TaskManager.API.Models.Services
             }
             return new Tuple<string, string>(userName, userPass);
         }
-
         public User GetUser(string login, string password)
         {
             return _db.Users.FirstOrDefault(u => u.Email == login && u.Password == password);
         }
-
         public ClaimsIdentity GetIdentity(string username, string password)
         {
             var currentUser = GetUser(username, password);
@@ -58,6 +60,68 @@ namespace TaskManager.API.Models.Services
                 return claimsIdentity;
             }
             return null;
+        }
+        public bool Create(UserModel model)
+        {
+            return DoAction(() =>
+            {
+                var newUser = new User(model.FirstName, model.Surname, model.Email,
+                    model.Password, model.Role, model.Phone, model.Photo);
+                _db.Users.Add(newUser);
+                _db.SaveChanges();
+            });         
+        }
+        public bool Update(int id, UserModel model)
+        {
+            var user = _db.Users.FirstOrDefault(u => u.Id == id);
+
+            if (user != null)
+            {
+                return DoAction(() =>
+                {
+                    user.FirstName = model.FirstName;
+                    user.Surname = model.Surname;
+                    user.Password = model.Password;
+                    user.Phone = model.Phone;
+                    user.Photo = model.Photo;
+                    user.Role = model.Role;
+                    user.Email = model.Email;
+                    _db.Users.Update(user);
+                    _db.SaveChanges();
+                });
+            }
+            return false;
+        }
+        public bool Remove(int id)
+        {
+            var user = _db.Users.FirstOrDefault(u => u.Id == id);
+
+            if (user != null)
+            {
+
+            }
+            return false;
+        }
+        public bool CreateMultipleUsers(IEnumerable<UserModel> usersModels)
+        {
+            return DoAction(() =>
+            {
+                var newUsers = usersModels.Select(userM => new User(userM));
+                _db.Users.AddRange(newUsers);
+                _db.SaveChangesAsync();                
+            });
+        }
+        private bool DoAction(Action action)
+        {
+            try
+            {
+                action();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }
