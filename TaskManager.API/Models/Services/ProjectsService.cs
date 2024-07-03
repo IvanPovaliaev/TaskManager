@@ -11,6 +11,7 @@ namespace TaskManager.API.Models.Services
     public class ProjectsService : AbstractService, ICommonService<ProjectModel>
     {
         private readonly ApplicationContext _db;
+
         public ProjectsService(ApplicationContext db)
         {
             _db = db;
@@ -71,6 +72,28 @@ namespace TaskManager.API.Models.Services
         public IQueryable<ProjectModel> GetAll()
         {
             return _db.Projects.Select(p => p.ToDto());
+        }
+
+        public void AddUsersToProject(int id, IEnumerable<int> userIds)
+        {
+            var project = _db.Projects.FirstOrDefault(p => p.Id == id);
+            foreach (var userId in userIds)
+            {
+                var user = _db.Users.FirstOrDefault(u => u.Id == userId);
+                project.Users.Add(user);
+            }
+            _db.SaveChanges();
+        }
+
+        public void RemoveUsersFromProject(int id, IEnumerable<int> userIds)
+        {
+            var project = _db.Projects.Include(p => p.Users).FirstOrDefault(p => p.Id == id);
+            foreach (var userId in userIds)
+            {
+                var user = _db.Users.FirstOrDefault(u => u.Id == userId);
+                if (project.Users.Contains(user)) project.Users.Remove(user);
+            }
+            _db.SaveChanges();
         }
     }
 }
