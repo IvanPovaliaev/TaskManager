@@ -116,5 +116,10 @@ namespace TaskManager.API.Models.Services
                 _db.SaveChangesAsync();                
             });
         }
+
+        public UserModel Get(int id)
+        {
+            return _db.Users.FirstOrDefault(u => u.Id == id)?.ToDto();
+        }
     }
 }

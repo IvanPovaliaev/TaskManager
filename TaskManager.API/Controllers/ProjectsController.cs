@@ -27,7 +27,18 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProjectModel>> Get() => await _db.Projects.Select(p => p.ToDto()).ToListAsync();
+        public async Task<IEnumerable<ProjectModel>> Get()
+        {
+            var user = _usersService.GetUser(HttpContext.User.Identity.Name);
+            if (user.Role == UserRole.Admin) return await _projectService.GetAll().ToListAsync();
+            return await _projectService.GetByUserId(user.Id);
+        }
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            var project = _projectService.Get(id);
+            return project == null ? NotFound() : Ok(project);
+        }
 
         [HttpPost]
         public IActionResult Create([FromBody] ProjectModel projectModel)
@@ -37,22 +48,36 @@ namespace TaskManager.API.Controllers
             var user = _usersService.GetUser(HttpContext.User.Identity.Name);
             if (user != null)
             {
-                var admin = _db.ProjectAdmins.FirstOrDefault(a => a.Id == user.Id);
-                if (admin == null)
+                if (user.Role == UserRole.Admin || user.Role == UserRole.Editor);
                 {
-                    admin = new ProjectAdmin(user);
-                    _db.ProjectAdmins.Add(admin);
+                    var admin = _db.ProjectAdmins.FirstOrDefault(a => a.Id == user.Id);
+                    if (admin == null)
+                    {
+                        admin = new ProjectAdmin(user);
+                        _db.ProjectAdmins.Add(admin);
+                    }
+                    projectModel.AdminId = admin.Id;
                 }
-                projectModel.AdminId = admin.Id;
+                return _projectService.Create(projectModel) ? Ok() : NotFound();
             }
-            return _projectService.Create(projectModel) ? Ok() : NotFound();                                  
+            return Unauthorized();                                            
         }
 
         [HttpPatch]
         public IActionResult Update(int id, [FromBody] ProjectModel projectModel)
         {
             if (projectModel != null)
-                return _projectService.Update(id, projectModel) ? Ok() : NotFound();
+            {
+                var user = _usersService.GetUser(HttpContext.User.Identity.Name);
+                if (user != null)
+                {
+                    if (user.Role == UserRole.Admin || user.Role == UserRole.Editor)
+                    {
+                        return _projectService.Update(id, projectModel) ? Ok() : NotFound();
+                    }
+                    return Unauthorized();  
+                }
+            }                
 
             return BadRequest();
         }

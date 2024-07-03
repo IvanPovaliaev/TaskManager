@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TaskManager.API.Models.Abstractions;
 using TaskManager.API.Models.Data;
 using TaskManager.Common.Models;
@@ -45,6 +48,29 @@ namespace TaskManager.API.Models.Services
                 _db.Projects.Update(currentProject);
                 _db.SaveChanges();
             });
+        }
+
+        public ProjectModel Get(int id)
+        {
+            return _db.Projects.FirstOrDefault(p => p.Id == id)?.ToDto();
+        }
+        public async Task<IEnumerable<ProjectModel>> GetByUserId(int userId)
+        {
+            var result = new List<ProjectModel>();
+            var admin = _db.ProjectAdmins.FirstOrDefault(a => a.UserId == userId);
+            if (admin != null)
+            {
+                var projects = await _db.Projects.Where(p => p.AdminId == admin.Id).Select(p => p.ToDto()).ToListAsync();
+                result.AddRange(projects);
+            }
+            var projectsForUser = await _db.Projects.Include(p => p.Users).Where(p => p.Id == userId).Select(p => p.ToDto()).ToListAsync();
+            result.AddRange(projectsForUser);
+            return result;
+        }
+
+        public IQueryable<ProjectModel> GetAll()
+        {
+            return _db.Projects.Select(p => p.ToDto());
         }
     }
 }
