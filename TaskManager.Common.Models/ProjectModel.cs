@@ -5,8 +5,8 @@ namespace TaskManager.Common.Models
     public class ProjectModel : CommonModel
     {
         public int? AdminId { get; set; }
-        public List<UserModel> Users { get; set; } = new List<UserModel>();
-        public List<DeskModel> Desks { get; set; } = new List<DeskModel>();
+        public List<int> UsersIds { get; set; } = new List<int>();
+        public List<int> DesksIds { get; set; } = new List<int>();
         public ProjectStatus Status { get; set; }
     }
 }

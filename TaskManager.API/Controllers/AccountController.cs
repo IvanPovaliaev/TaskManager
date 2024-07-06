@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System;
 using System.Linq;
-using System.Security.Claims;
 using TaskManager.API.Models.Data;
 using TaskManager.API.Models.Services;
 using System.IdentityModel.Tokens.Jwt;

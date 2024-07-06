@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using TaskManager.API.Models.Abstractions;
@@ -41,11 +42,13 @@ namespace TaskManager.API.Models.Services
             return DoAction(() =>
             {
                 var currentProject = _db.Projects.FirstOrDefault(project => project.Id == id);
-                currentProject.Name = model.Name;
-                currentProject.Description = model.Description;
-                currentProject.Image = model.Image;
-                currentProject.Status = model.Status;
-                currentProject.AdminId = model.AdminId;
+
+                if (currentProject.Name != model.Name && model.Name != null) currentProject.Name = model.Name;
+                if (currentProject.Description != model.Description && model.Description != null) currentProject.Description = model.Description;
+                if (currentProject.Image != model.Image && model.Image != null) currentProject.Image = model.Image;
+                if (currentProject.Status != model.Status && model.Status != null) currentProject.Status = model.Status;
+                if (currentProject.AdminId != model.AdminId && model.AdminId != null) currentProject.AdminId = model.AdminId;
+
                 _db.Projects.Update(currentProject);
                 _db.SaveChanges();
             });
@@ -53,7 +56,13 @@ namespace TaskManager.API.Models.Services
 
         public ProjectModel Get(int id)
         {
-            return _db.Projects.FirstOrDefault(p => p.Id == id)?.ToDto();
+            var project = _db.Projects.Include(p => p.Users).FirstOrDefault(p => p.Id == id);
+            var projectModel = project?.ToDto();
+
+            if (projectModel != null)
+                projectModel.UsersIds = project.Users.Select(u => u.Id).ToList();
+
+            return projectModel;
         }
         public async Task<IEnumerable<ProjectModel>> GetByUserId(int userId)
         {
@@ -69,9 +78,9 @@ namespace TaskManager.API.Models.Services
             return result;
         }
 
-        public IQueryable<ProjectModel> GetAll()
+        public IQueryable<CommonModel> GetAll()
         {
-            return _db.Projects.Select(p => p.ToDto());
+            return _db.Projects.Select(p => p.ToDto() as CommonModel);
         }
 
         public void AddUsersToProject(int id, IEnumerable<int> userIds)

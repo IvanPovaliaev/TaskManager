@@ -27,7 +27,7 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<ProjectModel>> Get()
+        public async Task<IEnumerable<CommonModel>> Get()
         {
             var user = _usersService.GetUser(HttpContext.User.Identity.Name);
             if (user.Role == UserRole.Admin) return await _projectService.GetAll().ToListAsync();
@@ -55,6 +55,7 @@ namespace TaskManager.API.Controllers
                     {
                         admin = new ProjectAdmin(user);
                         _db.ProjectAdmins.Add(admin);
+                        _db.SaveChanges();
                     }
                     projectModel.AdminId = admin.Id;
                 }
@@ -63,7 +64,7 @@ namespace TaskManager.API.Controllers
             return Unauthorized();
         }
 
-        [HttpPatch]
+        [HttpPatch("{id}")]
         public IActionResult Update(int id, [FromBody] ProjectModel projectModel)
         {
             if (projectModel != null)
@@ -82,7 +83,7 @@ namespace TaskManager.API.Controllers
             return BadRequest();
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public IActionResult Remove(int id) => _projectService.Remove(id) ? Ok() : NotFound();
 
         [HttpPatch("{id}/users")]
