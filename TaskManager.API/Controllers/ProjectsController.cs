@@ -46,22 +46,21 @@ namespace TaskManager.API.Controllers
             if (projectModel == null) return BadRequest();
 
             var user = _usersService.GetUser(HttpContext.User.Identity.Name);
-            if (user != null)
+
+            if (user == null) return Unauthorized();
+
+            if (user.Role == UserRole.Admin || user.Role == UserRole.Editor)
             {
-                if (user.Role == UserRole.Admin || user.Role == UserRole.Editor) ;
+                var admin = _db.ProjectAdmins.FirstOrDefault(a => a.Id == user.Id);
+                if (admin == null)
                 {
-                    var admin = _db.ProjectAdmins.FirstOrDefault(a => a.Id == user.Id);
-                    if (admin == null)
-                    {
-                        admin = new ProjectAdmin(user);
-                        _db.ProjectAdmins.Add(admin);
-                        _db.SaveChanges();
-                    }
-                    projectModel.AdminId = admin.Id;
+                    admin = new ProjectAdmin(user);
+                    _db.ProjectAdmins.Add(admin);
+                    _db.SaveChanges();
                 }
-                return _projectService.Create(projectModel) ? Ok() : NotFound();
+                projectModel.AdminId = admin.Id;
             }
-            return Unauthorized();
+            return _projectService.Create(projectModel) ? Ok() : NotFound();            
         }
 
         [HttpPatch("{id}")]
