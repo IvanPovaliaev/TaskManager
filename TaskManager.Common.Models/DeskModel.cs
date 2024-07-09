@@ -8,6 +8,6 @@ namespace TaskManager.Common.Models
         public string[]? Columns { get; set; }
         public int ProjectId { get; set; }
         public int? AuthorId { get; set; }
-        public List<int> TasksIds { get; set; }
+        public List<int>? TasksIds { get; set; }
     }
 }

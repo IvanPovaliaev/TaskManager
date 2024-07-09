@@ -26,9 +26,9 @@ namespace TaskManager.API.Models.Services
         {
             var desk = _db.Desks.Include(d => d.Tasks).FirstOrDefault(d => d.Id == id);
             var deskModel = desk?.ToDto();
-            if (deskModel == null)
+            if (deskModel != null)
                 deskModel.TasksIds = desk?.Tasks.Select(t => t.Id).ToList();
-            return deskModel;            
+            return deskModel;   
         }
 
         public bool Remove(int id)
@@ -52,7 +52,6 @@ namespace TaskManager.API.Models.Services
                 if (currentDesk.Image != model.Image && model.Image != null) currentDesk.Image = model.Image;
                 if (currentDesk.IsPrivate != model.IsPrivate) currentDesk.IsPrivate = model.IsPrivate;
                 if (currentDesk.AuthorId != model.AuthorId && model.AuthorId != null) currentDesk.AuthorId = model.AuthorId;
-                if (currentDesk.ProjectId != model.ProjectId) currentDesk.ProjectId = model.ProjectId;
                 if (model.Columns != null) currentDesk.Columns = JsonConvert.SerializeObject(model.Columns);
 
                 _db.Desks.Update(currentDesk);

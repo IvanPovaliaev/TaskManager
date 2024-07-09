@@ -16,14 +16,12 @@ namespace TaskManager.API.Controllers
     [Authorize]
     public class DesksController : ControllerBase
     {
-        private readonly ApplicationContext _db;
         private readonly UsersService _usersService;
         private readonly DesksService _desksService;
 
 
         public DesksController(ApplicationContext db)
         {
-            _db = db;
             _usersService = new UsersService(db);
             _desksService = new DesksService(db);
         }
@@ -45,7 +43,7 @@ namespace TaskManager.API.Controllers
             return desk is null ? NotFound() : Ok(desk);
         }
 
-        [HttpGet("project/{projectId}")]
+        [HttpGet("project")]
         public async Task<IEnumerable<CommonModel>> GetProjectDesk(int projectId)
         {
             var user = _usersService.GetUser(HttpContext.User.Identity.Name);

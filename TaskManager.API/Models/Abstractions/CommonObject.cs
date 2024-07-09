@@ -16,7 +16,7 @@ namespace TaskManager.API.Models
             Name = model.Name;
             Description = model.Description;
             Image = model.Image;
-            CreationDate = model.CreationDate;
+            CreationDate = DateTime.Now;
             Image = model.Image;
         }
     }
