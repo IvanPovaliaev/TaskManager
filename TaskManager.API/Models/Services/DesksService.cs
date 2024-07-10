@@ -61,13 +61,13 @@ namespace TaskManager.API.Models.Services
 
         public IQueryable<CommonModel> GetAll(int userId)
         {
-            return _db.Desks.Where(d => d.AuthorId == userId).Select(d => d.ToDto() as CommonModel);
+            return _db.Desks.Where(d => d.AuthorId == userId).Select(d => d.ToShortDto());
         }
 
         public IQueryable<CommonModel> GetProjectDesks(int projectId, int userId) //возврашаются desks все неприватные desk + приватные desks текущего пользователя
         {
             return _db.Desks.Where(d => d.ProjectId == projectId &&
-            ( d.AuthorId == userId || !d.IsPrivate)).Select(d => d.ToDto() as CommonModel);
+            ( d.AuthorId == userId || !d.IsPrivate)).Select(d => d.ToShortDto());
         }
     }
 }
