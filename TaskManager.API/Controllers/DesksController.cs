@@ -26,13 +26,14 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<CommonModel>> GetDesksForCurrentUser()
+        public async Task<ActionResult<IEnumerable<CommonModel>>> GetDesksForCurrentUser()
         {
             var user = _usersService.GetUser(HttpContext.User.Identity.Name);
 
             if (user == null) return Array.Empty<CommonModel>();
 
-            return await _desksService.GetAll(user.Id).ToListAsync();            
+            var result = await _desksService.GetAll(user.Id).ToListAsync();
+            return result is null ? NoContent() : Ok(result);           
         }
 
         [HttpGet("{id}")]
@@ -43,12 +44,13 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpGet("project")]
-        public async Task<IEnumerable<CommonModel>> GetProjectDesk(int projectId)
+        public async Task<ActionResult<IEnumerable<CommonModel>>> GetProjectDesk(int projectId)
         {
             var user = _usersService.GetUser(HttpContext.User.Identity.Name);
             if (user == null) return Array.Empty<CommonModel>();
 
-            return await _desksService.GetProjectDesks(projectId, user.Id).ToListAsync();            
+            var result = await _desksService.GetProjectDesks(projectId, user.Id).ToListAsync();
+            return result is null ? NoContent() : Ok(result);          
         }
 
         [HttpPost]

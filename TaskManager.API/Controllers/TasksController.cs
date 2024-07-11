@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TaskManager.API.Models;
 using TaskManager.API.Models.Data;
 using TaskManager.API.Models.Services;
 using TaskManager.Common.Models;
@@ -24,19 +25,21 @@ namespace TaskManager.API.Controllers
             _tasksService = new TasksService(db);
         }
         [HttpGet]
-        public async Task<IEnumerable<CommonModel>> GetTasksByDesk(int deskId)
+        public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasksByDesk(int deskId)
         {
-            return await _tasksService.GetDeskTasks(deskId).ToListAsync();
+            var result = await _tasksService.GetDeskTasks(deskId).ToListAsync();
+            return result is null ? NoContent() : Ok(result);
         }
 
         [HttpGet("user")]
-        public async Task<IEnumerable<CommonModel>> GetTasksForCurrentUser()
+        public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasksForCurrentUser()
         {
             var user = _usersService.GetUser(HttpContext.User.Identity.Name);
 
-            if (user == null) return Array.Empty<CommonModel>();
+            if (user == null) return Unauthorized(Array.Empty<CommonModel>());
 
-            return await _tasksService.GetTasksForUser(user.Id).ToListAsync();
+            var result = await _tasksService.GetTasksForUser(user.Id).ToListAsync();
+            return result is null ? NoContent() : Ok(result);
         }
 
         [HttpGet("{id}")]

@@ -48,5 +48,23 @@ namespace TaskManager.API.Models
                 ExecutorId = this.ExecutorId
             };
         }
+
+        public override TaskModel ToShortDto()
+        {
+            return new TaskModel()
+            {
+                Id = this.Id,
+                Name = this.Name,
+                Description = this.Description,
+                CreationDate = this.CreationDate,
+                StartDate = this.CreationDate,
+                EndDate = this.EndDate,
+                File = this.File,
+                DeskId = this.DeskId,
+                Column = this.Column,
+                CreatorId = this.CreatorId,
+                ExecutorId = this.ExecutorId
+            };
+        }
     }
 }

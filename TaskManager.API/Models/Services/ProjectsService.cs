@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using TaskManager.API.Models.Abstractions;
@@ -83,7 +82,7 @@ namespace TaskManager.API.Models.Services
 
         public IQueryable<CommonModel> GetAll()
         {
-            return _db.Projects.Select(p => p.ToDto() as CommonModel);
+            return _db.Projects.Select(p => p.ToShortDto());
         }
 
         public void AddUsersToProject(int id, IEnumerable<int> userIds)

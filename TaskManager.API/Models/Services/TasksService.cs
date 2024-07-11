@@ -58,14 +58,14 @@ namespace TaskManager.API.Models.Services
             });
         }
 
-        public IQueryable<CommonModel> GetDeskTasks(int deskId)
+        public IQueryable<TaskModel> GetDeskTasks(int deskId)
         {
-            return _db.Tasks.Where(t => t.DeskId == deskId).Select(t => t.ToDto() as CommonModel);
+            return _db.Tasks.Where(t => t.DeskId == deskId).Select(t => t.ToShortDto());
         }
 
         public IQueryable<CommonModel> GetTasksForUser(int userId)
         {
-            return _db.Tasks.Where(t => t.CreatorId == userId || t.ExecutorId == userId).Select(t => t.ToDto() as CommonModel);
+            return _db.Tasks.Where(t => t.CreatorId == userId || t.ExecutorId == userId).Select(t => t.ToShortDto());
         }
     }
 
