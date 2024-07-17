@@ -8,5 +8,14 @@ namespace TaskManager.Common.Models
         public List<int> UsersIds { get; set; } = new List<int>();
         public List<int> DesksIds { get; set; } = new List<int>();
         public ProjectStatus Status { get; set; }
+
+        public ProjectModel() { }
+
+        public ProjectModel(string name, string description, ProjectStatus status)
+        {
+            Name = name;
+            Description = description;
+            Status = status;
+        }
     }
 }
