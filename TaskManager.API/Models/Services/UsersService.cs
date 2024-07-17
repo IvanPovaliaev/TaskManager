@@ -75,36 +75,30 @@ namespace TaskManager.API.Models.Services
         }
 
         public bool Update(int id, UserModel model)
-        {
-            var user = _db.Users.FirstOrDefault(u => u.Id == id);
-
-            if (user != null)
+        {          
+            return DoAction(() =>
             {
-                return DoAction(() =>
-                {
-                    user.FirstName = model.FirstName;
-                    user.Surname = model.Surname;
-                    user.Password = model.Password;
-                    user.Phone = model.Phone;
-                    user.Photo = model.Photo;
-                    user.Role = model.Role;
-                    user.Email = model.Email;
-                    _db.Users.Update(user);
-                    _db.SaveChanges();
-                });
-            }
-            return false;
+                var user = _db.Users.FirstOrDefault(u => u.Id == id);
+                user.FirstName = model.FirstName;
+                user.Surname = model.Surname;
+                user.Password = model.Password;
+                user.Phone = model.Phone;
+                user.Photo = model.Photo;
+                user.Role = model.Role;
+                user.Email = model.Email;
+                _db.Users.Update(user);
+                _db.SaveChanges();
+            });
         }
 
         public bool Remove(int id)
         {
-            var user = _db.Users.FirstOrDefault(u => u.Id == id);
-
-            if (user != null)
+            return DoAction(() =>
             {
-
-            }
-            return false;
+                var remUser = _db.Users.FirstOrDefault(u => u.Id == id);
+                _db.Users.Remove(remUser);
+                _db.SaveChanges();
+            });
         }
 
         public bool CreateMultipleUsers(IEnumerable<UserModel> usersModels)
