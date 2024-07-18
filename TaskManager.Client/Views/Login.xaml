@@ -9,7 +9,8 @@
         MinHeight="300" MinWidth="300"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        Name="LoginWindow">
     
     <Grid>
         <Grid.RowDefinitions>
@@ -28,5 +29,26 @@
                 Style="{StaticResource commonBtn}"
                 Width="100"/>
         </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Vertical"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Center">
+            <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding CurrentUserCache.Login}" Value="{x:Null}">
+                            <Setter Property="Visibility" Value="Hidden"/>
+                            <Setter Property="Height" Value="0"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </StackPanel.Style>
+            <TextBlock Text="Last User" Style="{StaticResource commonTBlock}"></TextBlock>
+            <Button Content="{Binding CurrentUserCache.Login}"
+                    Command="{Binding LoginFromCacheCommand}"
+                    CommandParameter="{Binding ElementName=LoginWindow}"
+                    Style="{StaticResource commonBtn}"/>
+        </StackPanel>
+
+                    
     </Grid>
 </Window>

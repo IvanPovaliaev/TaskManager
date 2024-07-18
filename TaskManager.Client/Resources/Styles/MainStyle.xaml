@@ -57,4 +57,11 @@
             </Style>
         </Style.Resources>
     </Style>
+
+    <Style TargetType="TextBlock" x:Key="commonTBlock">        
+        <Setter Property="FontSize" Value="20"/>
+        <Setter Property="FontStyle" Value="{StaticResource commonFontStyle}"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
 </ResourceDictionary>
