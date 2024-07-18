@@ -49,8 +49,6 @@ namespace TaskManager.API.Models.Services
                 if (currentTask.StartDate != model.StartDate) currentTask.StartDate = model.StartDate;
                 if (currentTask.EndDate != model.EndDate) currentTask.EndDate = model.EndDate;
                 if (currentTask.File != model.File && model.File != null) currentTask.File = model.File;
-                if (currentTask.DeskId != model.DeskId) currentTask.DeskId = model.DeskId;
-                if (currentTask.CreatorId != model.CreatorId && model.CreatorId != null) currentTask.CreatorId = model.CreatorId;
                 if (currentTask.ExecutorId != model.ExecutorId && model.ExecutorId != null) currentTask.ExecutorId = model.ExecutorId;
 
                 _db.Tasks.Update(currentTask);

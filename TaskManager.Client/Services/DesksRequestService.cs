@@ -30,7 +30,7 @@ namespace TaskManager.Client.Services
             var parameters = new Dictionary<string, string>();
             parameters["projectId"] = projectId.ToString();
 
-            var response = await GetDataByUrl(HttpMethod.Get, $"{_desksControllerUrl}project?projectId={projectId}", token, null, null, parameters);
+            var response = await GetDataByUrl(HttpMethod.Get, $"{_desksControllerUrl}project", token, null, null, parameters);
             var desk = JsonConvert.DeserializeObject<List<DeskModel>>(response);
             return desk;
         }
