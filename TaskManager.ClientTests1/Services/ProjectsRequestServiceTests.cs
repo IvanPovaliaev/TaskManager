@@ -14,7 +14,7 @@ namespace TaskManager.Client.Services.Tests
 
         public ProjectsRequestServiceTests()
         {
-            _authToken = new UsersRequestService().GetToken("admin@admin.com", "qwerty123");
+            _authToken = new UsersRequestService().GetToken("admin@admin.com", "qwerty123").Result;
             _service = new ProjectsRequestService();
         }
 

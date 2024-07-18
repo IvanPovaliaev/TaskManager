@@ -12,11 +12,18 @@ namespace TaskManager.Client.Services
     {
         private string _usersControllerUrl = $"{HOST}users/";
 
-        public AuthToken GetToken(string userName, string password)
+        public async Task<AuthToken> GetToken(string userName, string password)
         {
             var url = $"{HOST}account/token";
-            var resultStr = GetDataByUrl(HttpMethod.Post, url, null, userName, password).Result;
+            var resultStr = await GetDataByUrl(HttpMethod.Post, url, null, userName, password);
             return JsonConvert.DeserializeObject<AuthToken>(resultStr);
+        }
+
+        public async Task<UserModel> GetCurrentUser(AuthToken token)
+        {
+            var response = await GetDataByUrl(HttpMethod.Get, $"{HOST}account/info", token);
+            var user = JsonConvert.DeserializeObject<UserModel>(response);
+            return user;
         }
 
         public async Task<HttpStatusCode> CreateUser(AuthToken token, UserModel user)

@@ -23,7 +23,7 @@
         <TextBox Text="{Binding UserLogin}" Style="{StaticResource commonTBox}"/>
         <PasswordBox x:Name="UserPassword" Style="{StaticResource commonPBox}"/>
         <Button Content="OK"
-                Command="{Binding GetUserFromDBCommnad}"
+                Command="{Binding GetUserFromDBCommand}"
                 CommandParameter="{Binding ElementName=UserPassword}"
                 Style="{StaticResource commonBtn}"
                 Width="100"/>
