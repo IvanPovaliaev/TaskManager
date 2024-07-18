@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace TaskManager.Common.Models
 {
@@ -9,5 +10,15 @@ namespace TaskManager.Common.Models
         public int ProjectId { get; set; }
         public int? AuthorId { get; set; }
         public List<int>? TasksIds { get; set; }
+
+        public DeskModel() { }
+
+        public DeskModel(string name, string description, bool isPrivate, IEnumerable<string> columns)
+        {
+            Name = name;
+            Description = description;
+            IsPrivate = isPrivate;
+            Columns = columns.ToArray();
+        }
     }
 }

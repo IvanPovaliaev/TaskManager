@@ -8,7 +8,7 @@ using TaskManager.Common.Models;
 
 namespace TaskManager.Client.Services
 {
-    internal class DesksRequestService : CommonRequestService
+    public class DesksRequestService : CommonRequestService
     {
         private string _desksControllerUrl = $"{HOST}desks/";
 
@@ -25,7 +25,7 @@ namespace TaskManager.Client.Services
             var desk = JsonConvert.DeserializeObject<DeskModel>(response);
             return desk;
         }
-        public async Task<List<DeskModel>> GetDeskByProject(AuthToken token, int projectId)
+        public async Task<List<DeskModel>> GetDesksByProject(AuthToken token, int projectId)
         {
             var parameters = new Dictionary<string, string>();
             parameters["projectId"] = projectId.ToString();
