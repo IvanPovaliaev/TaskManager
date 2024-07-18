@@ -1,0 +1,32 @@
+﻿<Window x:Class="TaskManager.Client.Views.Login"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TaskManager.Client.Views"
+        mc:Ignorable="d"
+        Title="Login" Height="300" Width="300"
+        MinHeight="300" MinWidth="300"
+        xmlns:prism="http://prismlibrary.com/"
+        prism:ViewModelLocator.AutoWireViewModel="True"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Vertical"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"                    
+                    Width="250">
+        <TextBox Text="{Binding UserLogin}" Style="{StaticResource commonTBox}"/>
+        <PasswordBox x:Name="UserPassword" Style="{StaticResource commonPBox}"/>
+        <Button Content="OK"
+                Command="{Binding GetUserFromDBCommnad}"
+                CommandParameter="{Binding ElementName=UserPassword}"
+                Style="{StaticResource commonBtn}"
+                Width="100"/>
+        </StackPanel>
+    </Grid>
+</Window>

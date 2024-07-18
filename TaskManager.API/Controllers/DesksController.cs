@@ -8,7 +8,6 @@ using TaskManager.API.Models.Data;
 using TaskManager.API.Models.Services;
 using TaskManager.Common.Models;
 
-
 namespace TaskManager.API.Controllers
 {
     [Route("api/[controller]")]
