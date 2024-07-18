@@ -4,16 +4,31 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using TaskManager.Client.Models;
+using System.Collections.Generic;
+using System.Web;
 
 namespace TaskManager.Client.Services
 {
     public abstract class CommonRequestService
     {
         public const string HOST = "http://localhost:5128/api/";
-        protected async Task<string> GetDataByUrl(HttpMethod method, string url, AuthToken token, string userName = null, string password = null)
+        protected async Task<string> GetDataByUrl(HttpMethod method, string url, AuthToken token, string userName = null, string password = null,
+            Dictionary<string, string> parameters = null)
         {
             var client = new HttpClient();
             HttpResponseMessage response = null;
+
+            if (parameters != null)
+            {
+                var builder = new UriBuilder(url);
+                var query = HttpUtility.ParseQueryString(builder.Query);
+
+                foreach ( var parameter in parameters )
+                    query[parameter.Key] = parameter.Value;
+
+                builder.Query = query.ToString();
+                url = builder.Uri.AbsoluteUri;
+            }
 
             if (userName != null && password != null)
             {

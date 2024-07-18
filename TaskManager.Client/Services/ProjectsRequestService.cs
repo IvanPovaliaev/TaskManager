@@ -33,8 +33,8 @@ namespace TaskManager.Client.Services
 
         public async Task<HttpStatusCode> UpdateProject(AuthToken token, ProjectModel project)
         {
-            var userJson = JsonConvert.SerializeObject(project);
-            return await SendDataByUrl(HttpMethod.Patch, $"{_projectsControllerUrl}{project.Id}", token, userJson);
+            var deskJson = JsonConvert.SerializeObject(project);
+            return await SendDataByUrl(HttpMethod.Patch, $"{_projectsControllerUrl}{project.Id}", token, deskJson);
         }
 
         public async Task<HttpStatusCode> DeleteProject(AuthToken token, int projectId)
