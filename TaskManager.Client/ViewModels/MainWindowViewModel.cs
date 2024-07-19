@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using TaskManager.Client.Models;
+using TaskManager.Client.Services;
 using TaskManager.Client.Views;
 using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
@@ -11,7 +12,7 @@ using TaskManager.Common.Models;
 namespace TaskManager.Client.ViewModels
 {
     public class MainWindowViewModel : BindableBase
-    {
+    {        
         #region COMMANDS
         public DelegateCommand OpenMyInfoPageCommand { get; set; }
         public DelegateCommand OpenProjectPageCommand { get; set; }
@@ -22,6 +23,8 @@ namespace TaskManager.Client.ViewModels
         #endregion
 
         #region PROPERTIES
+        private CommonViewService _commonViewService { get; set; }
+
         private readonly string _userInfoButtonName = "My info";
         private readonly string _userProjectsButtonName = "My projects";
         private readonly string _userDesksButtonName = "My desks";
@@ -33,7 +36,6 @@ namespace TaskManager.Client.ViewModels
         private Window _currentWindow {  get; set; }
 
         private AuthToken _token;
-
         public AuthToken Token
         {
             get => _token;
@@ -92,6 +94,8 @@ namespace TaskManager.Client.ViewModels
 
         public MainWindowViewModel(AuthToken token, UserModel currentUser, Window currentWindow = null)
         {
+            _commonViewService = new CommonViewService();
+
             Token = token;
             CurrentUser = currentUser;
             _currentWindow = currentWindow;
@@ -128,14 +132,15 @@ namespace TaskManager.Client.ViewModels
         }
         private void OpenProjectsPage()
         {
-            SelectedPageName = _userProjectsButtonName;
-            ShowMessage(_userProjectsButtonName);
+            var page = new ProjectsPage();
+            var model = new ProjectsPageViewModel(_token);
+            OpenPage(page, _userTasksButtonName, model);
         }
 
         private void OpenDesksPage()
         {
             SelectedPageName = _userDesksButtonName;
-            ShowMessage(_userDesksButtonName);
+            _commonViewService.ShowMessage(_userDesksButtonName);
         }
 
         private void OpenTasksPage()
@@ -159,12 +164,10 @@ namespace TaskManager.Client.ViewModels
         private void OpenUsersManagement()
         {
             SelectedPageName = _manageUsersButtonName;
-            ShowMessage(_manageUsersButtonName);
+            _commonViewService.ShowMessage(_manageUsersButtonName);
         }
 
         #endregion
-
-        private void ShowMessage(string message) => MessageBox.Show(message);
 
         private void OpenPage(Page page, string pageName, BindableBase viewModel)
         {

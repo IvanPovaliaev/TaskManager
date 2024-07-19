@@ -1,20 +1,15 @@
-﻿using System.Windows.Media.Imaging;
-using TaskManager.Client.Models.Extensions;
-using TaskManager.Common.Models;
+﻿using TaskManager.Common.Models;
 
 namespace TaskManager.Client.Models
 {
-    public class TaskClient
+    public class TaskClient : ModelClient<TaskModel>
     {
-        public TaskModel Model { get; private set; }
         public UserModel Creator { get; set; }
         public UserModel Executor { get; set; }
-        public BitmapImage Image { get => Model.LoadImage(); }
         public bool IsHaveFile { get => Model?.File != null; }
 
-        public TaskClient(TaskModel model)
+        public TaskClient(TaskModel model) : base(model)
         {
-            Model = model;
         }
     }
 }

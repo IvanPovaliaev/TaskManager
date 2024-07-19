@@ -1,6 +1,5 @@
 ﻿using Prism.Mvvm;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 
@@ -28,15 +27,14 @@ namespace TaskManager.Client.ViewModels
             _tasksRequestService = new TasksRequestService();
             _usersRequestService = new UsersRequestService();
 
-            InitializeAllTasks();
+            InitializeAllTasksAsync();
         }             
 
-        private async void InitializeAllTasks()
+        private async void InitializeAllTasksAsync()
         {
             var tasks = await _tasksRequestService.GetTasksForCurrentUser(_token);
 
             var allTasks = new List<TaskClient>();
-
 
             foreach (var task in tasks)
             {
