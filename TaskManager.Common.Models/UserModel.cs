@@ -27,5 +27,10 @@ namespace TaskManager.Common.Models
             RegistrationDate = DateTime.Now;
             Role = role;
         }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {Surname}";
+        }
     }
 }

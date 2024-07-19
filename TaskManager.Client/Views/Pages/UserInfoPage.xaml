@@ -1,0 +1,35 @@
+﻿<Page x:Class="TaskManager.Client.Views.Pages.UserInfoPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TaskManager.Client.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="UserInfoPage">
+
+    <Grid>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="FirstName: " Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="{Binding CurrentUser.FirstName}" Style="{StaticResource commonTBlock}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Surname: " Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="{Binding CurrentUser.Surname}" Style="{StaticResource commonTBlock}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Phone number: " Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="{Binding CurrentUser.Phone}" Style="{StaticResource commonTBlock}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="E-mail: " Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="{Binding CurrentUser.Email}" Style="{StaticResource commonTBlock}"/>
+            </StackPanel>
+                
+        </StackPanel>
+    </Grid>
+</Page>

@@ -13,25 +13,15 @@ namespace TaskManager.Client.ViewModels
 {
     public class LoginViewModel : BindableBase
     {
+        private UsersRequestService _usersRequestService { get; set; }        
 
-        private UsersRequestService _usersRequestService;        
-
-        #region COMMAND
+        #region COMMANDS
         public DelegateCommand<object> GetUserFromDBCommand { get; private set; }
         public DelegateCommand<object> LoginFromCacheCommand { get; private set; }
         #endregion
 
-        public LoginViewModel()
-        {
-            _usersRequestService = new UsersRequestService();
-            CurrentUserCache = GetUserCache();
-
-            GetUserFromDBCommand = new DelegateCommand<object>(GetUserFromDB);
-            LoginFromCacheCommand = new DelegateCommand<object>(LoginFromCache);
-        }
-
         #region PROPERIES
-        private string _cachePath = Path.GetTempPath() +"userTaskManager.txt";
+        private string _cachePath = Path.GetTempPath() + "userTaskManager.txt";
 
         private Window _currentWindow;
 
@@ -53,7 +43,7 @@ namespace TaskManager.Client.ViewModels
         private UserModel _currentUser;
         public UserModel CurrentUser
         {
-            get =>_currentUser;
+            get => _currentUser;
             set
             {
                 _currentUser = value;
@@ -72,6 +62,15 @@ namespace TaskManager.Client.ViewModels
             }
         }
         #endregion
+
+        public LoginViewModel()
+        {
+            _usersRequestService = new UsersRequestService();
+            CurrentUserCache = GetUserCache();
+
+            GetUserFromDBCommand = new DelegateCommand<object>(GetUserFromDB);
+            LoginFromCacheCommand = new DelegateCommand<object>(LoginFromCache);
+        }
 
         #region METHODS
         private async void GetUserFromDB(object parameter)
@@ -142,6 +141,7 @@ namespace TaskManager.Client.ViewModels
         private void OpenMainWindow()
         {
             var mainWindow = new MainWindow();
+            mainWindow.DataContext = new MainWindowViewModel(AuthToken, CurrentUser, mainWindow);
             mainWindow.Show();
             _currentWindow.Close();
         }

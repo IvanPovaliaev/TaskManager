@@ -3,6 +3,7 @@
     
     <Brush x:Key="commonBlueColor">#0696d7</Brush>
     <Brush x:Key="commonRedColor">#BF0426</Brush>
+    <Brush x:Key="commonGreyColor">#A6A6A6</Brush>
     <FontStyle x:Key="commonFontStyle">Normal</FontStyle>
 
     <Style TargetType="TextBox" x:Key="commonTBox">
@@ -58,10 +59,27 @@
         </Style.Resources>
     </Style>
 
-    <Style TargetType="TextBlock" x:Key="commonTBlock">        
-        <Setter Property="FontSize" Value="20"/>
+    <Style TargetType="TextBlock" x:Key="sharedTBlock">
         <Setter Property="FontStyle" Value="{StaticResource commonFontStyle}"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="commonTBlock" BasedOn="{StaticResource sharedTBlock}">        
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+
+    <Style TargetType="TextBlock" x:Key="headerTBlock" BasedOn="{StaticResource sharedTBlock}">
+        <Setter Property="FontSize" Value="20"/>
+    </Style>
+
+        <Style TargetType="GridSplitter" x:Key="commonSplitter">
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="{StaticResource commonGreyColor}"/>
+        <Setter Property="Margin" Value="2"/>
+    </Style>
+
+    <Style TargetType="Border" x:Key="CommonBorder">
+        <Setter Property="BorderBrush" Value="{StaticResource commonGreyColor}"/>
     </Style>
 </ResourceDictionary>
