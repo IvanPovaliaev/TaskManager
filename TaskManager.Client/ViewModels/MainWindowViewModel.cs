@@ -33,7 +33,16 @@ namespace TaskManager.Client.ViewModels
 
         private readonly string _manageUsersButtonName = "Users";
 
-        private Window _currentWindow {  get; set; }
+        private Window _currentWindow;
+        public Window CurrentWindow
+        {
+            get => _currentWindow;
+            private set
+            {
+                _currentWindow = value;
+                RaisePropertyChanged(nameof(CurrentWindow));
+            }
+        }
 
         private AuthToken _token;
         public AuthToken Token
@@ -133,7 +142,7 @@ namespace TaskManager.Client.ViewModels
         private void OpenProjectsPage()
         {
             var page = new ProjectsPage();
-            var model = new ProjectsPageViewModel(_token, _currentWindow);
+            var model = new ProjectsPageViewModel(_token, this);
             OpenPage(page, _userProjectsButtonName, model);
         }
 
@@ -169,7 +178,7 @@ namespace TaskManager.Client.ViewModels
 
         #endregion
 
-        private void OpenPage(Page page, string pageName, BindableBase viewModel)
+        public void OpenPage(Page page, string pageName, BindableBase viewModel)
         {
             SelectedPage = page;
             SelectedPageName = pageName;

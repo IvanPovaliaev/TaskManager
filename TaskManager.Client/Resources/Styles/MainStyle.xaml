@@ -93,13 +93,20 @@
         <Setter Property="BorderBrush" Value="{StaticResource commonGreyColor}"/>
     </Style>
 
-    <Style TargetType="Border" x:Key="projectPanelBorder">
-        <Setter Property="Background" Value="#ECEBE1"/>
+    <Style TargetType="Border" x:Key="commonPanelBorder">
         <Setter Property="BorderBrush" Value="{StaticResource commonBlueColor}"/>
         <Setter Property="Margin" Value="10"/>
         <Setter Property="Padding" Value="10"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="3"/>
         <Setter Property="Width" Value="200"/>
+    </Style>
+    
+    <Style TargetType="Border" x:Key="projectPanelBorder" BasedOn="{StaticResource commonPanelBorder}">
+        <Setter Property="Background" Value="#ECEBE1"/>
+    </Style>
+
+    <Style TargetType="Border" x:Key="deskPanelBorder" BasedOn="{StaticResource commonPanelBorder}">
+        <Setter Property="Background" Value="#6DC9A9"/>
     </Style>
 </ResourceDictionary>

@@ -8,6 +8,7 @@ using System.Windows;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
+using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
 
 namespace TaskManager.Client.ViewModels
@@ -15,7 +16,6 @@ namespace TaskManager.Client.ViewModels
     public class ProjectsPageViewModel : BindableBase
     {
         #region COMMANDS
-
         public DelegateCommand OpenNewProjectCommand { get; private set; }
         public DelegateCommand<object> OpenUpdateProjectCommand { get; private set; }
         public DelegateCommand<object> ShowProjectInfoCommand { get; private set; }
@@ -25,9 +25,18 @@ namespace TaskManager.Client.ViewModels
         public DelegateCommand OpenNewUsersToProjectCommand { get; private set; }
         public DelegateCommand AddUsersToProjectCommand { get; private set; }
         public DelegateCommand DeleteUsersFromProjectCommand { get; private set; }
+        public DelegateCommand OpenProjectDesksPageCommand { get; private set; }
+
         #endregion
 
         #region PROPERTIES
+
+        private AuthToken _token { get; set; }
+        private Window _ownerWindow {  get; set; }
+        private UsersRequestService _usersRequestService { get; set; }
+        private ProjectsRequestService _projectsRequestService { get; set; }
+        private CommonViewService _commonViewService { get; set; }
+        private MainWindowViewModel _mainWindowViewModel { get; set; }
 
         private UserModel _currentUser;
         public UserModel CurrentUser
@@ -39,6 +48,7 @@ namespace TaskManager.Client.ViewModels
                 RaisePropertyChanged(nameof(CurrentUser));
             }
         }
+
         private ClientAction _typeActionWithProject;
         public ClientAction TypeActionWithProject
         {
@@ -49,11 +59,6 @@ namespace TaskManager.Client.ViewModels
                 RaisePropertyChanged(nameof(TypeActionWithProject));
             }
         }
-        private AuthToken _token { get; set; }
-        private Window _ownerWindow {  get; set; }
-        private UsersRequestService _usersRequestService { get; set; }
-        private ProjectsRequestService _projectsRequestService { get; set; }
-        private CommonViewService _commonViewService { get; set; }
 
         private List<ModelClient<ProjectModel>> _userProjects;
         public List<ModelClient<ProjectModel>> UserProjects
@@ -104,14 +109,15 @@ namespace TaskManager.Client.ViewModels
         }
 
         #endregion
-        public ProjectsPageViewModel(AuthToken token, Window ownerWindow)
+        public ProjectsPageViewModel(AuthToken token, MainWindowViewModel mainWindowVM)
         {           
             _commonViewService = new CommonViewService();
             _projectsRequestService = new ProjectsRequestService();
             _usersRequestService = new UsersRequestService();            
 
             _token = token;       
-            _ownerWindow = ownerWindow;
+            _ownerWindow = mainWindowVM.CurrentWindow;
+            _mainWindowViewModel = mainWindowVM;
 
             OpenNewProjectCommand = new DelegateCommand(OpenNewProject);
             OpenUpdateProjectCommand = new DelegateCommand<object>(OpenUpdateProjectAsync);
@@ -122,6 +128,7 @@ namespace TaskManager.Client.ViewModels
             OpenNewUsersToProjectCommand = new DelegateCommand(OpenNewUsersToProject);
             AddUsersToProjectCommand = new DelegateCommand(AddUsersToProject);
             DeleteUsersFromProjectCommand = new DelegateCommand(DeleteUsersFromProject);
+            OpenProjectDesksPageCommand = new DelegateCommand(OpenProjectDesksPage);
 
             InitializeCurrentUser();
             InitializeUserProjectsAsync();            
@@ -267,6 +274,15 @@ namespace TaskManager.Client.ViewModels
             var deletedUsersStr = string.Join("\n", users);
             _commonViewService.ShowActionResult(resultAction, $"The following users were successfully deleted from the project:\n{deletedUsersStr}");
             await UpdatePage();
+        }
+
+        private void OpenProjectDesksPage()
+        {
+            if (SelectedProject?.Model != null)
+            {
+                var page = new ProjectDesksPage();
+                _mainWindowViewModel.OpenPage(page, $"Desk of {SelectedProject.Model.Name}", new ProjectDesksPageViewModel(_token, SelectedProject.Model));
+            }
         }
         #endregion
     }

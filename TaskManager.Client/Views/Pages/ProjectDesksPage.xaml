@@ -1,0 +1,61 @@
+﻿<Page x:Class="TaskManager.Client.Views.Pages.ProjectDesksPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TaskManager.Client.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="ProjectDesksPage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Content="New desk" Command="{Binding OpenNewDeskCommand}" Style="{StaticResource commonBtn}"/>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding ProjectDesks}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource deskPanelBorder}">
+                            <Grid Margin="10" MinHeight="200">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Orientation="Vertical">
+                                    <TextBlock Text="{Binding Path=Model.Name}"
+                                           TextWrapping="Wrap"
+                                           Style="{StaticResource commonTBlock}"/>
+
+                                    <TextBlock Text=" "/>
+
+                                    <TextBlock Text="{Binding Path=Model.Description}"
+                                           TextWrapping="Wrap"
+                                           TextAlignment="Center"
+                                           Style="{StaticResource commonTBlock}"/>
+
+                                    <Image Source="{Binding Path=Image}"
+                                       Width="100"
+                                       Height="100"/>
+                                </StackPanel>                              
+
+                                <Button Grid.Row="1" Content="Open" Command="{Binding Path=DataContext.ShowDeskTasksCommand,
+                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding Path=Model.Id}"
+                                        Style="{StaticResource commonBtn}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</Page>

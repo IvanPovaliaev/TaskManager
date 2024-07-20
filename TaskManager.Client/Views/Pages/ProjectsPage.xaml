@@ -93,7 +93,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -114,7 +114,8 @@
                     </Style>
                 </Button.Style>
             </Button>
-            <Button Grid.Row="3" Content="Desks" Command="{Binding}"
+            <Button Grid.Row="3" Content="Desks"
+                    Command="{Binding OpenProjectDesksPageCommand}"
                     Style="{StaticResource commonBtn}"/>
 
             <ListBox Grid.Row="4" 
