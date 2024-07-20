@@ -36,7 +36,7 @@ namespace TaskManager.Client.Services.Tests
             var service = new UsersRequestService();
             var token = service.GetToken("admin@admin.com", "qwerty123").Result;
 
-            var result = service.GetAllUsers(token);
+            var result = service.GetAllUsers(token).Result;
 
             Console.WriteLine(result.Count);
 

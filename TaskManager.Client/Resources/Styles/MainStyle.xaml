@@ -22,6 +22,12 @@
         </Style.Resources>
     </Style>
 
+    <Style TargetType="TextBox" x:Key="multilineTBox" BasedOn="{StaticResource commonTBox}">
+        <Setter Property="Height" Value="Auto"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="MinHeight" Value="60"/>
+    </Style>
+    
     <Style TargetType="PasswordBox" x:Key="commonPBox">
         <Setter Property="Height" Value="20"/>
         <Setter Property="FontSize" Value="14"/>
@@ -59,6 +65,10 @@
         </Style.Resources>
     </Style>
 
+    <Style TargetType="Button" x:Key="commonBtnRed" BasedOn="{StaticResource commonBtn}">
+        <Setter Property="Background" Value="{StaticResource commonRedColor}"/>
+    </Style>
+
     <Style TargetType="TextBlock" x:Key="sharedTBlock">
         <Setter Property="FontStyle" Value="{StaticResource commonFontStyle}"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -81,5 +91,15 @@
 
     <Style TargetType="Border" x:Key="CommonBorder">
         <Setter Property="BorderBrush" Value="{StaticResource commonGreyColor}"/>
+    </Style>
+
+    <Style TargetType="Border" x:Key="projectPanelBorder">
+        <Setter Property="Background" Value="#ECEBE1"/>
+        <Setter Property="BorderBrush" Value="{StaticResource commonBlueColor}"/>
+        <Setter Property="Margin" Value="10"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="3"/>
+        <Setter Property="Width" Value="200"/>
     </Style>
 </ResourceDictionary>

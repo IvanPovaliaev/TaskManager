@@ -30,8 +30,8 @@ namespace TaskManager.API.Controllers
         public async Task<IEnumerable<CommonModel>> Get()
         {
             var user = _usersService.GetUser(HttpContext.User.Identity.Name);
-            if (user.Role == UserRole.Admin) return await _projectService.GetAll().ToListAsync();
-            return await _projectService.GetByUserId(user.Id);
+            if (user.Role != UserRole.Admin) return await _projectService.GetByUserId(user.Id);
+            return await _projectService.GetAll().ToListAsync();            
         }
         [HttpGet("{id}")]
         public IActionResult Get(int id)

@@ -75,7 +75,7 @@ namespace TaskManager.API.Models.Services
                 var projects = await _db.Projects.Where(p => p.AdminId == admin.Id).Select(p => p.ToDto()).ToListAsync();
                 result.AddRange(projects);
             }
-            var projectsForUser = await _db.Projects.Include(p => p.Users).Where(p => p.Id == userId).Select(p => p.ToDto()).ToListAsync();
+            var projectsForUser = await _db.Projects.Include(p => p.Users).Where(p => p.Users.Select(u => u.Id).Contains(userId)).Select(p => p.ToDto()).ToListAsync();
             result.AddRange(projectsForUser);
             return result;
         }

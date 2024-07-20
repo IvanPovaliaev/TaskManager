@@ -133,8 +133,8 @@ namespace TaskManager.Client.ViewModels
         private void OpenProjectsPage()
         {
             var page = new ProjectsPage();
-            var model = new ProjectsPageViewModel(_token);
-            OpenPage(page, _userTasksButtonName, model);
+            var model = new ProjectsPageViewModel(_token, _currentWindow);
+            OpenPage(page, _userProjectsButtonName, model);
         }
 
         private void OpenDesksPage()

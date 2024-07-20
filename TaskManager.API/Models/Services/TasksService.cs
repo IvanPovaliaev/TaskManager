@@ -1,10 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Newtonsoft.Json;
-using System.Linq;
+﻿using System.Linq;
 using TaskManager.API.Models.Abstractions;
 using TaskManager.API.Models.Data;
 using TaskManager.Common.Models;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TaskManager.API.Models.Services
 {

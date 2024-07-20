@@ -39,10 +39,10 @@ namespace TaskManager.Client.Services
             return await SendDataByUrl(HttpMethod.Post, _usersControllerUrl, token, userJson);
         }
 
-        public List<UserModel> GetAllUsers(AuthToken token)
+        public async Task<List<UserModel>> GetAllUsers(AuthToken token)
         {
-            var response = GetDataByUrl(HttpMethod.Get, _usersControllerUrl, token);
-            var users = JsonConvert.DeserializeObject<List<UserModel>>(response.Result);
+            var response = await GetDataByUrl(HttpMethod.Get, _usersControllerUrl, token);
+            var users = JsonConvert.DeserializeObject<List<UserModel>>(response);
             return users;
         }
 

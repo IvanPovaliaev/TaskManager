@@ -13,7 +13,7 @@ namespace TaskManager.API.Controllers
 {    
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly ApplicationContext _db;
@@ -25,6 +25,7 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateUser([FromBody] UserModel userModel)
         {
             if (userModel != null)           
@@ -34,6 +35,7 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpPatch("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UpdateUser(int id, [FromBody] UserModel userModel)
         {
             if (userModel != null)
@@ -50,12 +52,14 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult RemoveUser(int id) => _usersService.Remove(id) ? Ok() : NotFound();
 
         [HttpGet()]
         public async Task<IEnumerable<UserModel>> GetUsers() => await _db.Users.Select(u => u.ToDto()).ToListAsync();
 
         [HttpPost("all")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateMultipleUsers([FromBody] IEnumerable<UserModel> usersModels)
         {
             if (!usersModels.IsNullOrEmpty())

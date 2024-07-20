@@ -27,8 +27,8 @@ namespace TaskManager.Client.ViewModels
 
         public string UserLogin { get; set; }
         public string UserPassword { get; private set; }
-        private UserCache _currentUserCache;
 
+        private UserCache _currentUserCache;
         public UserCache CurrentUserCache
         {
             get => _currentUserCache;
@@ -38,7 +38,6 @@ namespace TaskManager.Client.ViewModels
                 RaisePropertyChanged(nameof(CurrentUserCache));
             }
         }
-
 
         private UserModel _currentUser;
         public UserModel CurrentUser

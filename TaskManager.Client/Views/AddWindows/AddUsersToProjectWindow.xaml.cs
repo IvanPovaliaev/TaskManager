@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using TaskManager.Client.ViewModels;
 using TaskManager.Common.Models;
 
-namespace TaskManager.Client.Views.Pages
+namespace TaskManager.Client.Views.AddWindows
 {
     /// <summary>
-    /// Interaction logic for ProjectsPage.xaml
+    /// Interaction logic for AddUsersToProjectWindow.xaml
     /// </summary>
-    public partial class ProjectsPage : Page
+    public partial class AddUsersToProjectWindow : Window
     {
-        public ProjectsPage()
+        public AddUsersToProjectWindow()
         {
             InitializeComponent();
         }
@@ -29,7 +30,7 @@ namespace TaskManager.Client.Views.Pages
                 {
 
                 }
-            }                
+            }
 
             foreach (UserModel user in e.AddedItems)
             {
@@ -41,7 +42,7 @@ namespace TaskManager.Client.Views.Pages
                 {
 
                 }
-            }            
+            }
         }
     }
 }

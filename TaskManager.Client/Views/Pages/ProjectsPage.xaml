@@ -18,7 +18,19 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Button Content="New project" Command="{Binding OpenNewProjectCommand}" Style="{StaticResource commonBtn}"/>
+            <Button Content="New project" Command="{Binding OpenNewProjectCommand}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource commonBtn}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentUser.Role}" Value="User">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="Height" Value="0"/>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding UserProjects}">
                     <ItemsControl.ItemsPanel>
@@ -28,26 +40,36 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Style="{StaticResource CommonBorder}">
+                            <Border Style="{StaticResource projectPanelBorder}">
                                 <StackPanel Margin="10">
                                     
                                     <TextBlock Text="{Binding Path=Model.Name}"
-                                               Style="{StaticResource commonTBlock}"/>
-                                    
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Numbers " Style="{StaticResource commonTBlock}"/>
-                                        <TextBlock Text="{Binding Path=Model.UsersIds.Count}" Style="{StaticResource commonTBlock}"/>
-                                    </StackPanel>
+                                               Style="{StaticResource commonTBlock}"/>                                   
                                     
                                     <Image Source="{Binding Path=Image}" Width="100" Height="100"/>
                                     
                                     <Button Content="Open" Command="{Binding Path=DataContext.ShowProjectInfoCommand,
                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}"/>
-                                    
+                                            CommandParameter="{Binding Path=Model.Id}"
+                                            Style="{StaticResource commonBtn}"/>
+
                                     <Button Content="Edit" Command="{Binding Path=DataContext.OpenUpdateProjectCommand,
                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}"/>
+                                            CommandParameter="{Binding Path=Model.Id}">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource commonBtn}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Path=DataContext.CurrentUser.Role,
+                                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="User">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Height" Value="0"/>
+                                                        <Setter Property="Visibility" Value="Hidden"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                    
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
@@ -57,6 +79,17 @@
         </Grid>
 
         <Grid Grid.Column="1">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SelectedProject.Model}" Value="{x:Null}">
+                            <Setter Property="Width" Value="0"/>
+                            <Setter Property="Visibility" Value="Hidden"/>
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -68,14 +101,57 @@
                        Style="{StaticResource headerTBlock}"/>
             <TextBlock Grid.Row="1" Text="{Binding SelectedProject.Model.Description}"
                        Style="{StaticResource commonTBlock}"/>
-            <Button Grid.Row="2" Content="Add users" Command="{Binding}"
-                    Style="{StaticResource commonBtn}"/>
+            <Button Grid.Row="2" Content="Add users" Command="{Binding OpenNewUsersToProjectCommand}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource commonBtn}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CurrentUser.Role}" Value="User">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="Height" Value="0"/>
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
             <Button Grid.Row="3" Content="Desks" Command="{Binding}"
                     Style="{StaticResource commonBtn}"/>
-            <ListBox Grid.Row="4" ItemsSource="{Binding ProjectUsers}">
+
+            <ListBox Grid.Row="4" 
+                     ItemsSource="{Binding Path=ProjectUsers}" 
+                     SelectedItem="{Binding SelectedUsersForProject, Mode=TwoWay}"
+                     SelectionMode="Extended"
+                     SelectionChanged="ListBox_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Path=Email}" Style="{StaticResource commonTBlock}"/>
+                        <TextBlock Text="{Binding Path=Email}" 
+                                    Style="{StaticResource commonTBlock}" 
+                                    Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}">
+                            <TextBlock.ContextMenu>
+                                <ContextMenu DataContext="{Binding Path=PlacementTarget.Tag, RelativeSource={RelativeSource Self}}">
+                                    <MenuItem Header="Delete selected" 
+                                                Command="{Binding DeleteUsersFromProjectCommand}">
+                                        <MenuItem.Style>
+                                            <Style TargetType="MenuItem">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding CurrentUser.Role}" Value="Admin">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding CurrentUser.Role}" Value="Editor">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+
+                                                    <DataTrigger Binding="{Binding CurrentUser.Role}" Value="User">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </MenuItem.Style>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </TextBlock.ContextMenu>
+                        </TextBlock>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
