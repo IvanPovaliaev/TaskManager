@@ -1,0 +1,121 @@
+﻿<Window x:Class="TaskManager.Client.Views.AddWindows.CreateOrUpdateDeskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TaskManager.Client.Views.AddWindows"
+        mc:Ignorable="d"
+        Title="CreateOrUpdateDeskWindow" Height="450" Width="350"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Desk" Style="{StaticResource headerTBlock}"/>
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Text="Name: "
+                           Style="{StaticResource commonTBlock}"
+                           HorizontalAlignment="Right"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedDesk.Model.Name}"
+                         Style="{StaticResource commonTBox}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Text="Description: "
+                           Style="{StaticResource commonTBlock}"
+                           HorizontalAlignment="Right"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedDesk.Model.Description}"
+                         Style="{StaticResource multilineTBox}"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0"
+                           Text="Image: "
+                           Style="{StaticResource commonTBlock}"
+                           HorizontalAlignment="Right"/>
+                <Grid Grid.Row="2" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Image Grid.Row="0" Source="{Binding SelectedDesk.Image}"/>
+                    <Button Grid.Row="1" Content="Select"
+                            Command="{Binding SelectImageForDeskCommand}"
+                            Style="{StaticResource commonBtn}"/>
+                </Grid>
+
+                <TextBlock Grid.Row="3" Grid.Column="0"
+                           Text="Columns: "
+                           Style="{StaticResource commonTBlock}"
+                           HorizontalAlignment="Right"/>
+                <StackPanel Grid.Row="3" Grid.Column="1">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding ColumnsForNewDesk}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBox Text="{Binding Value}"
+                                                   Width="150"
+                                                   Style="{StaticResource commonTBox}"/>
+                                        <Button Content="-" Command="{Binding Path=DataContext.RemoveColumnItemCommand,
+                                                RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource commonBtnRed}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <Button Content="+"
+                            Command="{Binding AddNewColumnItemCommand}"
+                            Style="{StaticResource commonBtnGreen}"/>
+                </StackPanel>
+                <TextBlock Grid.Row="4" Grid.Column="0"
+                           Text="IsPrivate: "
+                           Style="{StaticResource commonTBlock}"
+                           HorizontalAlignment="Right"/>
+                <CheckBox Grid.Row="4" Grid.Column="1"
+                          IsChecked="{Binding SelectedDesk.Model.IsPrivate}"
+                          Style="{StaticResource commonChBox}"/>
+
+            </Grid>
+        </ScrollViewer>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Delete"
+                    Command="{Binding DeleteDeskCommand}">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource commonBtnRed}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding TypeActionWithDesk}"
+                                         Value="Create">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Button Grid.Column="1" Content="Save"
+                    Command="{Binding CreateOrUpdateDeskCommand}"
+                    Style="{StaticResource commonBtn}"/>
+        </Grid>
+
+    </Grid>
+</Window>

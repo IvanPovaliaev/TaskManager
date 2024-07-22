@@ -27,6 +27,7 @@
                             <Grid Margin="10" MinHeight="200">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="40"/>
                                 </Grid.RowDefinitions>
 
@@ -45,7 +46,7 @@
                                     <Image Source="{Binding Path=Image}"
                                        Width="100"
                                        Height="100"/>
-                                </StackPanel>                              
+                                </StackPanel>
 
                                 <Button Grid.Row="1" Content="Open" Command="{Binding Path=DataContext.ShowDeskTasksCommand,
                                         RelativeSource={RelativeSource AncestorType=ItemsControl}}"

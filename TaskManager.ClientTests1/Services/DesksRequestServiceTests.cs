@@ -72,7 +72,7 @@ namespace TaskManager.Client.Services.Tests
         [TestMethod()]
         public void DeleteDeskByIdTest()
         {
-            var result = _service.DeleteDeskById(_authToken, 5).Result;
+            var result = _service.DeleteDesk(_authToken, 5).Result;
 
             Assert.AreEqual(HttpStatusCode.OK, result);
         }

@@ -47,7 +47,7 @@ namespace TaskManager.Client.Services
             return await SendDataByUrl(HttpMethod.Patch, $"{_desksControllerUrl}{desk.Id}", token, deskJson);
         }
 
-        public async Task<HttpStatusCode> DeleteDeskById(AuthToken token, int deskId)
+        public async Task<HttpStatusCode> DeleteDesk(AuthToken token, int deskId)
         {
             return await DeleteDataByUrl($"{_desksControllerUrl}{deskId}", token);
         }
