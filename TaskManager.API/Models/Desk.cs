@@ -41,5 +41,17 @@ namespace TaskManager.API.Models
                 ProjectId = this.ProjectId
             };
         }
+
+        public override CommonModel ToShortDto()
+        {
+            return new CommonModel()
+            {
+                Id = this.Id,
+                Name = this.Name,
+                Description = this.Description,
+                CreationDate = this.CreationDate,
+                Image = this.Image
+            };
+        }
     }
 }

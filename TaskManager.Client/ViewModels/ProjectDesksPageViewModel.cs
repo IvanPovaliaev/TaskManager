@@ -32,6 +32,7 @@ namespace TaskManager.Client.ViewModels
         private DesksRequestService _desksRequestService { get; set; }
         private UsersRequestService _usersRequestService { get; set; }
         private CommonViewService _commonViewService { get; set; }
+        private DesksViewService _deskViewService { get; set; }
 
         private UserModel _currentUser;
         public UserModel CurrentUser
@@ -70,7 +71,7 @@ namespace TaskManager.Client.ViewModels
         public ModelClient<DeskModel> SelectedDesk
         {
             get => _selectedDesk;
-            private set
+            set
             {
                 _selectedDesk = value;
                 RaisePropertyChanged(nameof(SelectedDesk));
@@ -104,6 +105,7 @@ namespace TaskManager.Client.ViewModels
             _desksRequestService = new DesksRequestService();
             _usersRequestService = new UsersRequestService();
             _commonViewService = new CommonViewService();
+            _deskViewService = new DesksViewService(token, _desksRequestService, _commonViewService);
 
             InitializeCurrentUserAsync();
             LoadProjectDesksAsync();
@@ -112,7 +114,12 @@ namespace TaskManager.Client.ViewModels
             OpenUpdateDeskCommand = new DelegateCommand<object>(OpenUpdateDeskAsync);
             CreateOrUpdateDeskCommand = new DelegateCommand(CreateOrUpdateDeskAsync);
             DeleteDeskCommand = new DelegateCommand(DeleteDeskAsync);
-            SelectImageForDeskCommand = new DelegateCommand(SelectImageForDesk);
+            SelectImageForDeskCommand = new DelegateCommand(() =>
+            {
+                var selectedDesk = SelectedDesk;
+                _deskViewService.SelectImageForDesk(ref selectedDesk);
+                SelectedDesk = selectedDesk;
+            });
             AddNewColumnItemCommand = new DelegateCommand(AddNewColumnItem);
             RemoveColumnItemCommand = new DelegateCommand<object>(RemoveColumnItem);
         }
@@ -128,11 +135,10 @@ namespace TaskManager.Client.ViewModels
 
             ProjectDesks = desks?.Select(desk => new ModelClient<DeskModel>(desk)).ToList();
         }
-        private async Task UpdatePage()
+        private async Task UpdatePageAsync()
         {
             await LoadProjectDesksAsync();
             SelectedDesk = null;
-            _commonViewService.CurrentOpenWindow?.Close();
         }
         private void OpenNewDesk()
         {
@@ -145,26 +151,20 @@ namespace TaskManager.Client.ViewModels
             _commonViewService.OpenWindow(window, this);
         }
         private async void OpenUpdateDeskAsync(object deskId)
-        {
-            SelectedDesk = await GetDeskClientByIdAsync(deskId);
+        {            
+            SelectedDesk = await _deskViewService.GetDeskClientByIdAsync(deskId);
+
+            if (CurrentUser.Id != SelectedDesk.Model.Id)
+            {
+                _commonViewService.ShowMessage("You are not admin!");
+                return;
+            }
 
             TypeActionWithDesk = ClientAction.Update;
-            var window = new CreateOrUpdateDeskWindow();
-            window.Owner = _ownerWindow;
 
-            _commonViewService.OpenWindow(window, this);
-        }
-        private async Task<ModelClient<DeskModel>> GetDeskClientByIdAsync(object deskId)
-        {
-            try
-            {
-                var selectedDesk = await _desksRequestService.GetDeskById(_token, (int)deskId);
-                return new ModelClient<DeskModel>(selectedDesk);
-            }
-            catch (FormatException ex)
-            {
-                return new ModelClient<DeskModel>(null);
-            }
+            ColumnsForNewDesk =  new ObservableCollection<ColumnBindingHelper>(SelectedDesk.Model.Columns.Select(c => new ColumnBindingHelper(c)));
+
+            _deskViewService.OpenViewDeskInfo(deskId, this, _ownerWindow);
         }
         private async void CreateOrUpdateDeskAsync()
         {
@@ -174,10 +174,11 @@ namespace TaskManager.Client.ViewModels
                     await CreateDeskAsync();
                     break;
                 case ClientAction.Update:
-                    await UpdateDeskAsync();
+                    SelectedDesk.Model.Columns = ColumnsForNewDesk.Select(c => c.Value).ToArray();
+                    await _deskViewService.UpdateDeskAsync(SelectedDesk.Model);
                     break;
             }
-            await UpdatePage();
+            await UpdatePageAsync();
             _commonViewService.CurrentOpenWindow?.Close();
         }
         private async Task CreateDeskAsync()
@@ -188,22 +189,10 @@ namespace TaskManager.Client.ViewModels
             var resultAction = await _desksRequestService.CreateDesk(_token, SelectedDesk.Model);
             _commonViewService.ShowActionResult(resultAction, "New desk created successfully");
         }
-        private async Task UpdateDeskAsync()
-        {
-            var resultAction = await _desksRequestService.UpdateDesk(_token, SelectedDesk.Model);
-            _commonViewService.ShowActionResult(resultAction, "Desk updated successfully");       
-        }
         private async void DeleteDeskAsync()
         {
-            var resultAction = await _desksRequestService.DeleteDesk(_token, SelectedDesk.Model.Id);
-            UpdatePage();
-            _commonViewService.CurrentOpenWindow?.Close();
-            _commonViewService.ShowActionResult(resultAction, "Desk deleted successfully");
-        }
-        private void SelectImageForDesk()
-        {
-            _commonViewService.SetImageForObject(SelectedDesk.Model);
-            SelectedDesk = new ModelClient<DeskModel>(SelectedDesk.Model);
+            await _deskViewService.DeleteDeskAsync(SelectedDesk.Model.Id);
+            UpdatePageAsync();
         }
         private void AddNewColumnItem() => ColumnsForNewDesk.Add(new ColumnBindingHelper("Column"));
         private void RemoveColumnItem(object item)

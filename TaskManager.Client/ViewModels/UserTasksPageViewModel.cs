@@ -10,6 +10,7 @@ namespace TaskManager.Client.ViewModels
         private AuthToken _token {  get; set; }
         private TasksRequestService _tasksRequestService { get; set; }
         private UsersRequestService _usersRequestService { get; set; }
+
         private List<TaskClient> _allTasks;
         public List<TaskClient> AllTasks
         {

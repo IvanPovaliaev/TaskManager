@@ -48,7 +48,13 @@
                                        Height="100"/>
                                 </StackPanel>
 
-                                <Button Grid.Row="1" Content="Open" Command="{Binding Path=DataContext.ShowDeskTasksCommand,
+                                <Button Grid.Row="1" Content="Edit" Command="{Binding Path=DataContext.OpenUpdateDeskCommand,
+                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                        CommandParameter="{Binding Path=Model.Id}"
+                                        Style="{StaticResource commonBtn}"/>
+
+
+                                <Button Grid.Row="2" Content="Open" Command="{Binding Path=DataContext.ShowDeskTasksCommand,
                                         RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding Path=Model.Id}"
                                         Style="{StaticResource commonBtn}"/>
