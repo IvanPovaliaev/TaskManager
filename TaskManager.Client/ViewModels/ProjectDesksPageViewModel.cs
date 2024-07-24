@@ -1,6 +1,5 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,6 +8,7 @@ using System.Windows;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
+using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
 
 namespace TaskManager.Client.ViewModels
@@ -23,12 +23,14 @@ namespace TaskManager.Client.ViewModels
         public DelegateCommand SelectImageForDeskCommand { get; private set; }
         public DelegateCommand AddNewColumnItemCommand { get; private set; } 
         public DelegateCommand<object> RemoveColumnItemCommand { get; private set; }
+        public DelegateCommand<object> OpenDeskTasksPageCommand {  get; private set; }
         #endregion
 
         #region PROPERTIES
         private AuthToken _token { get; set; }
         private Window _ownerWindow { get; set; }
         private ProjectModel _project { get; set; }
+        private MainWindowViewModel _mainWindowViewModel { get; set; }
         private DesksRequestService _desksRequestService { get; set; }
         private UsersRequestService _usersRequestService { get; set; }
         private CommonViewService _commonViewService { get; set; }
@@ -100,6 +102,7 @@ namespace TaskManager.Client.ViewModels
         {
             _token = token;
             _project = project;
+            _mainWindowViewModel = mainWindowVM;
             _ownerWindow = mainWindowVM.CurrentWindow;
 
             _desksRequestService = new DesksRequestService();
@@ -122,6 +125,7 @@ namespace TaskManager.Client.ViewModels
             });
             AddNewColumnItemCommand = new DelegateCommand(AddNewColumnItem);
             RemoveColumnItemCommand = new DelegateCommand<object>(RemoveColumnItem);
+            OpenDeskTasksPageCommand = new DelegateCommand<object>(OpenDeskTasksPageAsync);
         }
 
         #region METHODS
@@ -200,6 +204,14 @@ namespace TaskManager.Client.ViewModels
             var itemToRemove = (ColumnBindingHelper)item;
 
             ColumnsForNewDesk.Remove(itemToRemove);
+        }
+
+        private async void OpenDeskTasksPageAsync(object deskId)
+        {
+            SelectedDesk = await _deskViewService.GetDeskClientByIdAsync((int)deskId);
+            var page = new DeskTasksPage();
+            var context = new DeskTasksPageViewModel(_token, SelectedDesk.Model, page);
+            _mainWindowViewModel.OpenPage(page, $"Tasks of {SelectedDesk.Model.Name}", context);
         }
         #endregion
     }

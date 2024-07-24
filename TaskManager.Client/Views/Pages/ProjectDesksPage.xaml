@@ -27,7 +27,7 @@
                             <Grid Margin="10" MinHeight="200">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="40"/>
                                     <RowDefinition Height="40"/>
                                 </Grid.RowDefinitions>
 
@@ -48,13 +48,15 @@
                                        Height="100"/>
                                 </StackPanel>
 
-                                <Button Grid.Row="1" Content="Edit" Command="{Binding Path=DataContext.OpenUpdateDeskCommand,
+                                <Button Grid.Row="1" Content="Edit"
+                                        Command="{Binding Path=DataContext.OpenUpdateDeskCommand,
                                         RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding Path=Model.Id}"
                                         Style="{StaticResource commonBtn}"/>
 
 
-                                <Button Grid.Row="2" Content="Open" Command="{Binding Path=DataContext.ShowDeskTasksCommand,
+                                <Button Grid.Row="2" Content="Open"
+                                        Command="{Binding Path=DataContext.OpenDeskTasksPageCommand,
                                         RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                         CommandParameter="{Binding Path=Model.Id}"
                                         Style="{StaticResource commonBtn}"/>

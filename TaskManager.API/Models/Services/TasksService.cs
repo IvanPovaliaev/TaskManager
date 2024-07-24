@@ -47,6 +47,7 @@ namespace TaskManager.API.Models.Services
                 if (currentTask.EndDate != model.EndDate) currentTask.EndDate = model.EndDate;
                 if (currentTask.File != model.File && model.File != null) currentTask.File = model.File;
                 if (currentTask.ExecutorId != model.ExecutorId && model.ExecutorId != null) currentTask.ExecutorId = model.ExecutorId;
+                if (currentTask.Column != model.Column && model.Column != null) currentTask.Column = model.Column;
 
                 _db.Tasks.Update(currentTask);
                 _db.SaveChanges();

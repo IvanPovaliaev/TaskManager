@@ -12,8 +12,7 @@ namespace TaskManager.Client.Services
     {
         private AuthToken _token { get; set; }
         private CommonViewService _commonViewService { get; set; }
-        private DesksRequestService _desksRequestService { get; set; }
-        
+        private DesksRequestService _desksRequestService { get; set; }        
 
         public DesksViewService(AuthToken token, DesksRequestService desksRequestService, CommonViewService commonViewService)
         {

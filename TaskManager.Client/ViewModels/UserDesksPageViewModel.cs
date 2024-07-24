@@ -1,15 +1,12 @@
-﻿using System;
+﻿
 using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
-using Newtonsoft.Json.Linq;
 using TaskManager.Common.Models;
 using Prism.Commands;
-using TaskManager.Client.Views.AddWindows;
 using System.Windows;
 using System.Collections.ObjectModel;
 
@@ -166,6 +163,5 @@ namespace TaskManager.Client.ViewModels
         }
 
         #endregion
-
     }
 }
