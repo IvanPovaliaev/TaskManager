@@ -1,4 +1,6 @@
 ﻿
+using System;
+using TaskManager.Client.Services;
 using TaskManager.Common.Models;
 
 namespace TaskManager.Client.Models
@@ -11,5 +13,7 @@ namespace TaskManager.Client.Models
 
         public TaskClient(TaskModel model) : base(model)
         {
-        }    }
+            
+        }
+    }
 }

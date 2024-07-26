@@ -32,6 +32,7 @@ namespace TaskManager.Client.ViewModels
         private DeskTasksPage _page { get; set; }
         private UsersRequestService _usersRequestService { get; set; }
         private TasksRequestService _tasksRequestService { get; set; }
+        private ProjectsRequestService _projectsRequestService { get; set; }
         private CommonViewService _commonViewService { get; set; }
 
         private Dictionary<string, List<TaskClient>> _taskByColumns;
@@ -67,6 +68,18 @@ namespace TaskManager.Client.ViewModels
             }
         }
 
+        private UserModel _selectedTaskExecutor;
+        public UserModel SelectedTaskExecutor
+        {
+            get => _selectedTaskExecutor;
+            set
+            {
+                _selectedTaskExecutor = value;
+                RaisePropertyChanged(nameof(SelectedTaskExecutor));
+            }
+        }
+        public List<UserModel> AllProjectUsers { get; set; }
+
         #endregion
 
         public DeskTasksPageViewModel(AuthToken token, DeskModel desk, DeskTasksPage page, MainWindowViewModel? mainWindowVM = null)
@@ -79,6 +92,7 @@ namespace TaskManager.Client.ViewModels
             _usersRequestService = new UsersRequestService();
             _tasksRequestService = new TasksRequestService();
             _commonViewService = new CommonViewService();
+            _projectsRequestService = new ProjectsRequestService();
 
             OpenNewTaskCommand = new DelegateCommand(OpenNewTask);
             OpenUpdateTaskCommand = new DelegateCommand<object>(OpenUpdateTask);
@@ -93,6 +107,21 @@ namespace TaskManager.Client.ViewModels
         private async void DeskTasksPage_LoadedAsync(object sender, RoutedEventArgs e)
         {
             await GetTaskByColumns(_desk.Id);
+
+            var project = await _projectsRequestService.GetProjectById(_token, _desk.ProjectId);
+            var projectUsers = new List<UserModel>();
+
+            if (project?.UsersIds != null)
+            {
+                foreach (var userId in project.UsersIds)
+                {
+                    var user = await _usersRequestService.GetUserById(_token, userId);
+                    projectUsers.Add(user);
+                }
+            }
+
+            AllProjectUsers = projectUsers;
+
             var grid = await CreateTasksGrid();
             _page.TasksGrid.Children.Add(grid);
         }
@@ -107,9 +136,23 @@ namespace TaskManager.Client.ViewModels
 
             foreach (var column in _desk.Columns)
             {
-                tasksByColumns.Add(column, allTasks.Where(t => t.Column == column)
-                                                    .Select(t => new TaskClient(t))
-                                                    .ToList());
+                allTasks = allTasks.Where(t => t.Column == column).ToList();
+                var allTasksClients = new List<TaskClient>();
+
+                foreach (var task in allTasks)
+                {
+                    var taskClient = new TaskClient(task);
+
+                    if (taskClient.Model?.CreatorId != null)
+                        taskClient.Creator = await _usersRequestService.GetUserById(_token, (int)taskClient.Model.CreatorId);
+
+                    if (taskClient.Model?.ExecutorId != null)
+                        taskClient.Executor = await _usersRequestService.GetUserById(_token, (int)taskClient.Model.ExecutorId);
+
+                    allTasksClients.Add(taskClient);
+                };
+
+                tasksByColumns.Add(column, allTasksClients);
             }
 
             TasksByColumns = tasksByColumns;
@@ -216,6 +259,10 @@ namespace TaskManager.Client.ViewModels
         private void OpenUpdateTask(object taskModel)
         {
             SelectedTask = new TaskClient((TaskModel)taskModel);
+
+            if (SelectedTask.Model.ExecutorId != null)
+                SelectedTaskExecutor = AllProjectUsers.FirstOrDefault(x => x.Id == SelectedTask.Model.ExecutorId);
+
             TypeActionWithTask = ClientAction.Update;
 
             var wnd = new CreateOrUpdateTaskWindow();
@@ -226,12 +273,15 @@ namespace TaskManager.Client.ViewModels
         {
             SelectedTask.Model.DeskId = _desk.Id;
             SelectedTask.Model.Column = _desk.Columns.FirstOrDefault();
+            if (SelectedTaskExecutor != null)
+                SelectedTask.Model.ExecutorId = SelectedTaskExecutor.Id;
 
             var resultAction = await _tasksRequestService.CreateTask(_token, SelectedTask.Model);
             _commonViewService.ShowActionResult(resultAction, "New task created successfully");
         }
         public async Task UpdateTaskAsync()
         {
+            SelectedTask.Model.ExecutorId = SelectedTaskExecutor.Id;
             var resultAction = await _tasksRequestService.UpdateTask(_token, SelectedTask.Model);
             _commonViewService.ShowActionResult(resultAction, "Task updated successfully");
         }
