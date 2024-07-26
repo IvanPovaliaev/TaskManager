@@ -14,22 +14,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Button Content="New task" 
-                Command="{Binding OpenNewTaskeWindowCommnad}"
+                Command="{Binding OpenNewTaskCommand}"
                 Style="{StaticResource commonBtn}"/>
 
         <Grid Grid.Row="1" x:Name="tasksGrid"/>
-
-
-        <!--<ItemsControl Grid.Row ="1"
-                      ItemsSource="{Binding TasksByColumns}">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Key}"
-                               Style="{StaticResource headerTBlock}"/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>-->
-        
-        
     </Grid>
 </Page>

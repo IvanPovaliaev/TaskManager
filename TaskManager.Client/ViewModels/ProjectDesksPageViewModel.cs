@@ -205,7 +205,6 @@ namespace TaskManager.Client.ViewModels
 
             ColumnsForNewDesk.Remove(itemToRemove);
         }
-
         private async void OpenDeskTasksPageAsync(object deskId)
         {
             SelectedDesk = await _deskViewService.GetDeskClientByIdAsync((int)deskId);

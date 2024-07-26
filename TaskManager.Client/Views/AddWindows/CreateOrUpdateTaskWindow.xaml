@@ -1,0 +1,88 @@
+﻿<Window x:Class="TaskManager.Client.Views.AddWindows.CreateOrUpdateTaskWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TaskManager.Client.Views.AddWindows"
+        xmlns:models="clr-namespace:TaskManager.Common.Models;assembly=TaskManager.Common.Models"
+        mc:Ignorable="d"
+        Title="CreateOrUpdateTaskWindow" Height="450" Width="350">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Задача" Style="{StaticResource headerTBlock}"/>
+        <ScrollViewer Grid.Row="1"  
+                      VerticalScrollBarVisibility="Auto">
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Name: " Style="{StaticResource commonTBlock}" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedTask.Model.Name}" 
+                         Style="{StaticResource commonTBox}" 
+                           HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Description: " Style="{StaticResource commonTBlock}" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedTask.Model.Description}" 
+                         Style="{StaticResource multilineTBox}" 
+                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="File: " Style="{StaticResource commonTBlock}" 
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <Grid Grid.Row="2" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0"
+                               HorizontalAlignment="Center"
+                               MaxHeight="300"/>
+                    <Button Grid.Row="1" Content="Select" 
+                            Command="{Binding SelectFileForTaskCommand}"
+                            Style="{StaticResource commonBtn}"
+                            VerticalAlignment="Center"/>
+                </Grid>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Executor: " Style="{StaticResource commonTBlock}"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <ComboBox Grid.Row="3" Grid.Column="1" 
+                          ItemsSource="{Binding AllProjectUsers}"
+                          SelectedItem="{Binding SelectedTaskExecutor}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="{x:Type models:UserModel}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Path=FirstName}" Style="{StaticResource commonTBlock}"/>
+                                <TextBlock Text=" " Style="{StaticResource commonTBlock}"/>
+                                <TextBlock Text="{Binding Path=Surname}" Style="{StaticResource commonTBlock}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Start: " Style="{StaticResource commonTBlock}"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <DatePicker Grid.Row="4" Grid.Column="1" SelectedDate="{Binding SelectedTask.Model.StartDate}"/>
+
+                <TextBlock Grid.Row="5" Grid.Column="0" Text="End: " Style="{StaticResource commonTBlock}"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <DatePicker Grid.Row="5" Grid.Column="1" SelectedDate="{Binding SelectedTask.Model.EndDate}"/>
+            </Grid>
+        </ScrollViewer>
+        <Button Grid.Row="2" Content="Save" Command="{Binding CreateOrUpdateTaskCommand}" 
+                Style="{StaticResource commonBtn}"/>
+    </Grid>
+</Window>

@@ -13,7 +13,11 @@ namespace TaskManager.Common.Models
         public int? CreatorId { get; set; }
         public int? ExecutorId { get; set; }
 
-        public TaskModel() { }
+        public TaskModel()
+        {
+            StartDate = DateTime.Now;
+            EndDate = DateTime.Now;
+        }
 
         public TaskModel(string name, string description, DateTime start, DateTime end, string column)
         {

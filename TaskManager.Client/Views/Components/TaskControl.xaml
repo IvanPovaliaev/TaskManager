@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TaskManager.Client.Views.Components"
              mc:Ignorable="d" 
-             Height="200"
+             Height="220"
              Width="200">
     <Grid>
         <Border Style="{StaticResource taskPanelBorder}">
@@ -13,6 +13,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
@@ -44,14 +45,51 @@
                     <TextBlock Text="Start: "
                                Style="{StaticResource commonTBlock}"/>
                     <DatePickerTextBox Text="{Binding Path=Model.StartDate}"
-                                       IsReadOnly="True"/>
+                                       IsReadOnly="True"
+                                       Style="{StaticResource commonDatePickerTBox}"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="5" Orientation="Horizontal">
                     <TextBlock Text="End: "
                                Style="{StaticResource commonTBlock}"/>
                     <DatePickerTextBox Text="{Binding Path=Model.EndDate}"
-                                       IsReadOnly="True"/>
+                                       IsReadOnly="True"
+                                       Style="{StaticResource commonDatePickerTBox}"/>
+                </StackPanel>
+
+                <StackPanel Name="FileStackPanel" Grid.Row="6" Orientation="Horizontal">
+                    <TextBlock Text="File: "
+                               Style="{StaticResource commonTBlock}"/>
+
+                    <Button Click="DownloadButton_Click"
+                            Background="Transparent"
+                            BorderThickness="0">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource commonBtn}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.IsHaveFile,
+                                        RelativeSource={RelativeSource AncestorType=StackPanel}}" Value="false">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <TextBlock TextDecorations="Underline" Foreground="Blue" Text="Download"/>
+                    </Button>
+                    <TextBlock Text="empty">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource commonTBlock}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=DataContext.IsHaveFile,
+                                        RelativeSource={RelativeSource AncestorType=StackPanel}}" Value="true">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StackPanel>
             </Grid>
         </Border>

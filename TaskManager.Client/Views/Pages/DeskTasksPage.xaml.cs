@@ -12,7 +12,7 @@ namespace TaskManager.Client.Views.Pages
         public DeskTasksPage()
         {
             InitializeComponent();
-            TasksGrid = tasksGrid;
+            TasksGrid = tasksGrid;            
         }
     }
 }

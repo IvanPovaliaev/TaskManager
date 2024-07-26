@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using Prism.Commands;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
+using TaskManager.Client.Views.AddWindows;
 using TaskManager.Client.Views.Components;
 using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
@@ -15,6 +17,14 @@ namespace TaskManager.Client.ViewModels
 {
     public class DeskTasksPageViewModel : BindableBase
     {
+        #region COMMANDS
+        public DelegateCommand OpenNewTaskCommand { get; private set; }
+        public DelegateCommand OpenUpdateTaskCommand { get; private set; }
+        public DelegateCommand CreateOrUpdateTaskCommand { get; private set; }
+        public DelegateCommand DeleteTaskCommand { get; private set; }
+        public DelegateCommand SelectFileForTaskCommand { get; private set; }
+        #endregion
+
         #region PROPERTIES
         private AuthToken _token { get; set; }
         private DeskModel _desk { get; set; }
@@ -34,6 +44,28 @@ namespace TaskManager.Client.ViewModels
             }
         }
 
+        private TaskClient _selectedTask;
+        public TaskClient SelectedTask
+        {
+            get => _selectedTask;
+            set
+            {
+                _selectedTask = value;
+                RaisePropertyChanged(nameof(SelectedTask));
+            }
+        }
+
+        private ClientAction _typeActionWithTask;
+        public ClientAction TypeActionWithTask
+        {
+            get => _typeActionWithTask;
+            set
+            {
+                _typeActionWithTask = value;
+                RaisePropertyChanged(nameof(TypeActionWithTask));
+            }
+        }
+
         #endregion
 
         public DeskTasksPageViewModel(AuthToken token, DeskModel desk, DeskTasksPage page)
@@ -45,6 +77,12 @@ namespace TaskManager.Client.ViewModels
             _usersRequestService = new UsersRequestService();
             _tasksRequestService = new TasksRequestService();
             _commonViewService = new CommonViewService();
+
+            OpenNewTaskCommand = new DelegateCommand(OpenNewTask);
+            OpenUpdateTaskCommand = new DelegateCommand(OpenUpdateTask);
+            CreateOrUpdateTaskCommand = new DelegateCommand(CreateOrUpdateTaskAsync);
+            DeleteTaskCommand = new DelegateCommand(DeleteTaskAsync);
+            SelectFileForTaskCommand = new DelegateCommand(SelectFileForTask);
 
             page.Loaded += DeskTasksPage_LoadedAsync;            
         }
@@ -58,7 +96,6 @@ namespace TaskManager.Client.ViewModels
         #endregion
 
         #region METHODS
-
         private async Task GetTaskByColumns(int deskId)
         {
             var tasksByColumns = new Dictionary<string, List<TaskClient>>();
@@ -74,7 +111,6 @@ namespace TaskManager.Client.ViewModels
 
             TasksByColumns = tasksByColumns;
         }
-
         private Grid CreateTasksGrid()
         {
             var resource = new ResourceDictionary();
@@ -125,6 +161,61 @@ namespace TaskManager.Client.ViewModels
             }
 
             return grid;
+        }
+        private async void CreateOrUpdateTaskAsync()
+        {
+            switch (TypeActionWithTask)
+            {
+                case ClientAction.Create:                    
+                    await CreateTaskAsync();
+                    break;
+                case ClientAction.Update:
+                    await UpdateTaskAsync();
+                    break;
+            }
+            await UpdatePageAsync();
+            _commonViewService.CurrentOpenWindow?.Close();
+        }
+        private async Task UpdatePageAsync()
+        {
+            SelectedTask = null;
+            DeskTasksPage_LoadedAsync(this, new RoutedEventArgs());
+        }       
+        private void OpenNewTask()
+        {
+            SelectedTask = new TaskClient(new TaskModel());
+            TypeActionWithTask = ClientAction.Create;
+            var wnd = new CreateOrUpdateTaskWindow();
+            _commonViewService.OpenWindow(wnd, this);
+        }
+        private void OpenUpdateTask()
+        {
+            TypeActionWithTask = ClientAction.Update;
+            var wnd = new CreateOrUpdateTaskWindow();
+            _commonViewService.OpenWindow(wnd, this);
+        }
+        private async Task CreateTaskAsync()
+        {
+            SelectedTask.Model.DeskId = _desk.Id;
+            SelectedTask.Model.Column = _desk.Columns.FirstOrDefault();
+
+            var resultAction = await _tasksRequestService.CreateTask(_token, SelectedTask.Model);
+            _commonViewService.ShowActionResult(resultAction, "New task created successfully");
+        }
+        public async Task UpdateTaskAsync()
+        {
+            var resultAction = await _tasksRequestService.UpdateTask(_token, SelectedTask.Model);
+            _commonViewService.ShowActionResult(resultAction, "Task updated successfully");
+        }
+        private async void DeleteTaskAsync()
+        {
+            await _tasksRequestService.DeleteTask(_token, SelectedTask.Model.Id);
+            UpdatePageAsync();
+        }
+        private void SelectFileForTask()
+        {
+            _commonViewService.SetFileForTask(SelectedTask.Model);
+            SelectedTask = new TaskClient(SelectedTask.Model);
         }
         #endregion
     }
