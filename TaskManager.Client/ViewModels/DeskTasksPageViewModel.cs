@@ -19,7 +19,7 @@ namespace TaskManager.Client.ViewModels
     {
         #region COMMANDS
         public DelegateCommand OpenNewTaskCommand { get; private set; }
-        public DelegateCommand OpenUpdateTaskCommand { get; private set; }
+        public DelegateCommand<object> OpenUpdateTaskCommand { get; private set; }
         public DelegateCommand CreateOrUpdateTaskCommand { get; private set; }
         public DelegateCommand DeleteTaskCommand { get; private set; }
         public DelegateCommand SelectFileForTaskCommand { get; private set; }
@@ -28,6 +28,7 @@ namespace TaskManager.Client.ViewModels
         #region PROPERTIES
         private AuthToken _token { get; set; }
         private DeskModel _desk { get; set; }
+        private Window _ownerWindow { get; set; }
         private DeskTasksPage _page { get; set; }
         private UsersRequestService _usersRequestService { get; set; }
         private TasksRequestService _tasksRequestService { get; set; }
@@ -68,18 +69,19 @@ namespace TaskManager.Client.ViewModels
 
         #endregion
 
-        public DeskTasksPageViewModel(AuthToken token, DeskModel desk, DeskTasksPage page)
+        public DeskTasksPageViewModel(AuthToken token, DeskModel desk, DeskTasksPage page, MainWindowViewModel? mainWindowVM = null)
         {
             _token = token;
             _desk = desk;
             _page = page;
+            _ownerWindow = mainWindowVM?.CurrentWindow;
 
             _usersRequestService = new UsersRequestService();
             _tasksRequestService = new TasksRequestService();
             _commonViewService = new CommonViewService();
 
             OpenNewTaskCommand = new DelegateCommand(OpenNewTask);
-            OpenUpdateTaskCommand = new DelegateCommand(OpenUpdateTask);
+            OpenUpdateTaskCommand = new DelegateCommand<object>(OpenUpdateTask);
             CreateOrUpdateTaskCommand = new DelegateCommand(CreateOrUpdateTaskAsync);
             DeleteTaskCommand = new DelegateCommand(DeleteTaskAsync);
             SelectFileForTaskCommand = new DelegateCommand(SelectFileForTask);
@@ -91,7 +93,8 @@ namespace TaskManager.Client.ViewModels
         private async void DeskTasksPage_LoadedAsync(object sender, RoutedEventArgs e)
         {
             await GetTaskByColumns(_desk.Id);
-            _page.TasksGrid.Children.Add(CreateTasksGrid());
+            var grid = await CreateTasksGrid();
+            _page.TasksGrid.Children.Add(grid);
         }
         #endregion
 
@@ -111,7 +114,7 @@ namespace TaskManager.Client.ViewModels
 
             TasksByColumns = tasksByColumns;
         }
-        private Grid CreateTasksGrid()
+        private async Task<Grid> CreateTasksGrid()
         {
             var resource = new ResourceDictionary();
             resource.Source = new Uri("./Resources/Styles/MainStyle.xaml", UriKind.Relative);
@@ -147,11 +150,31 @@ namespace TaskManager.Client.ViewModels
                 Grid.SetRow(columnControl, 1);
                 Grid.SetColumn(columnControl, columnCount);
 
+                var user = await _usersRequestService.GetCurrentUser(_token);
                 var tasksViews = new List<TaskControl>();
 
                 foreach (var task in column.Value)
                 {
-                    tasksViews.Add(new TaskControl(task));
+                    var taskControl = new TaskControl(task);
+
+                    //Create button for Admin and Creator
+                    if (task.Model.CreatorId == user.Id || user.Role == UserRole.Admin)
+                    {
+                        var editBtn = new Button();
+                        editBtn.Content = "Edit";
+                        editBtn.Style = (Style)resource["commonBtn"];
+                        editBtn.Command = OpenUpdateTaskCommand;
+                        editBtn.CommandParameter = task.Model;
+
+                        var lastRowNumb = taskControl.TaskGrid.RowDefinitions.Count() - 1;  
+
+                        Grid.SetRow(editBtn, lastRowNumb);
+                        Grid.SetColumn(editBtn, 0);
+
+                        taskControl.TaskGrid.Children.Add(editBtn);
+                    }
+                    
+                    tasksViews.Add(taskControl);                    
                 }
 
                 columnControl.ItemsSource = tasksViews;
@@ -185,13 +208,18 @@ namespace TaskManager.Client.ViewModels
         {
             SelectedTask = new TaskClient(new TaskModel());
             TypeActionWithTask = ClientAction.Create;
+
             var wnd = new CreateOrUpdateTaskWindow();
+            wnd.Owner = _ownerWindow;
             _commonViewService.OpenWindow(wnd, this);
         }
-        private void OpenUpdateTask()
+        private void OpenUpdateTask(object taskModel)
         {
+            SelectedTask = new TaskClient((TaskModel)taskModel);
             TypeActionWithTask = ClientAction.Update;
+
             var wnd = new CreateOrUpdateTaskWindow();
+            wnd.Owner = _ownerWindow;
             _commonViewService.OpenWindow(wnd, this);
         }
         private async Task CreateTaskAsync()

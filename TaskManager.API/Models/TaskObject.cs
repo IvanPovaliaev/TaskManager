@@ -9,6 +9,7 @@ namespace TaskManager.API.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public byte[]? File { get; set; }
+        public string? FileName { get; set; }
         public int DeskId { get; set; }
         public Desk Desk { get; set; }
         public string Column { get; set; }
@@ -23,6 +24,7 @@ namespace TaskManager.API.Models
             StartDate = taskModel.CreationDate;
             EndDate = taskModel.EndDate;
             File = taskModel.File;
+            FileName = taskModel.FileName;
             DeskId = taskModel.DeskId;
             Column = taskModel.Column;
             CreatorId = taskModel.CreatorId;
@@ -41,6 +43,7 @@ namespace TaskManager.API.Models
                 StartDate = this.CreationDate,
                 EndDate = this.EndDate,
                 File = this.File,
+                FileName = this.FileName,
                 DeskId = this.DeskId,
                 Column = this.Column,
                 CreatorId = this.CreatorId,
@@ -59,6 +62,7 @@ namespace TaskManager.API.Models
                 StartDate = this.CreationDate,
                 EndDate = this.EndDate,
                 File = this.File,
+                FileName = this.FileName,
                 DeskId = this.DeskId,
                 Column = this.Column,
                 CreatorId = this.CreatorId,

@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:TaskManager.Client.Views.AddWindows"
         xmlns:models="clr-namespace:TaskManager.Common.Models;assembly=TaskManager.Common.Models"
         mc:Ignorable="d"
-        Title="CreateOrUpdateTaskWindow" Height="450" Width="350">
+        Title="CreateOrUpdateTaskWindow" Height="450" Width="350"
+        WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -49,9 +50,22 @@
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
+
                     <TextBlock Grid.Row="0"
-                               HorizontalAlignment="Center"
-                               MaxHeight="300"/>
+                               MaxHeight="300"
+                               Text="{Binding SelectedTask.Model.FileName}"
+                               TextWrapping="Wrap">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock" BasedOn="{StaticResource commonTBlock}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text, RelativeSource={RelativeSource Self}}" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+
                     <Button Grid.Row="1" Content="Select" 
                             Command="{Binding SelectFileForTaskCommand}"
                             Style="{StaticResource commonBtn}"

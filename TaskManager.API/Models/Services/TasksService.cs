@@ -46,6 +46,7 @@ namespace TaskManager.API.Models.Services
                 if (currentTask.StartDate != model.StartDate) currentTask.StartDate = model.StartDate;
                 if (currentTask.EndDate != model.EndDate) currentTask.EndDate = model.EndDate;
                 if (currentTask.File != model.File && model.File != null) currentTask.File = model.File;
+                if (currentTask.FileName != model.FileName && model.FileName != null) currentTask.FileName = model.FileName;
                 if (currentTask.ExecutorId != model.ExecutorId && model.ExecutorId != null) currentTask.ExecutorId = model.ExecutorId;
                 if (currentTask.Column != model.Column && model.Column != null) currentTask.Column = model.Column;
 

@@ -9,6 +9,7 @@ namespace TaskManager.Client.Services
     public class CommonViewService
     {
         private const string _imageDialogFilterPattern  = "Image files (*.jpg, *.jpeg, *.jpe, *.jfif, *.png, *.tiff) | *.jpg; *.jpeg; *.jpe; *.jfif; *.png; *.tiff";
+        private const string _allFilesDialogFilterPattern = "All files (*.*)|*.*";
         public Window CurrentOpenWindow { get; private set; }
         public void ShowMessage(string message) => MessageBox.Show(message);
         public void ShowActionResult(System.Net.HttpStatusCode code, string message)
@@ -53,21 +54,22 @@ namespace TaskManager.Client.Services
 
         public void SetFileForTask(TaskModel model)
         {
-            var filePath = GetFileFromDialog(_imageDialogFilterPattern);
+            var filePath = GetFileFromDialog(_allFilesDialogFilterPattern);
 
             if (!string.IsNullOrEmpty(filePath))
             {
                 var fileBytes = File.ReadAllBytes(filePath);
                 model.File = fileBytes;
+                model.FileName = new FileInfo(filePath).Name;
             }
         }
 
-        public void DownloadFile(byte[] fileData)
+        public void DownloadFile(byte[] fileData, string? fileName = null)
         {
             var saveFileDialog = new SaveFileDialog
             {
-                FileName = "downloadedFile.txt", // Default file name
-                Filter = "All files (*.*)|*.*" // File types filter
+                FileName = fileName ?? "downloadedFile.txt", // Default file name
+                Filter = _allFilesDialogFilterPattern // File types filter
             };
 
             if (saveFileDialog.ShowDialog() == true)

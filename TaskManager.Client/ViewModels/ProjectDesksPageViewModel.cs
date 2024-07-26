@@ -209,7 +209,7 @@ namespace TaskManager.Client.ViewModels
         {
             SelectedDesk = await _deskViewService.GetDeskClientByIdAsync((int)deskId);
             var page = new DeskTasksPage();
-            var context = new DeskTasksPageViewModel(_token, SelectedDesk.Model, page);
+            var context = new DeskTasksPageViewModel(_token, SelectedDesk.Model, page, _mainWindowViewModel);
             _mainWindowViewModel.OpenPage(page, $"Tasks of {SelectedDesk.Model.Name}", context);
         }
         #endregion
