@@ -6,6 +6,8 @@
     <Brush x:Key="commonGreyColor">#A6A6A6</Brush>
     <Brush x:Key="commonGreenColor">#6DC9A9</Brush>
     <Brush x:Key="taskBlueColor">#C9EBF2</Brush>
+    <Brush x:Key="taskGreenColor">#85EDD5</Brush>
+    <Brush x:Key="deskColumnMouseEnterColor">#9CCCE0</Brush>
     <FontStyle x:Key="commonFontStyle">Normal</FontStyle>
 
     <Style TargetType="TextBox" x:Key="commonTBox">
@@ -121,6 +123,11 @@
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Margin" Value="0, 10"/>
         <Setter Property="Padding" Value="0"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource commonGreenColor}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="CheckBox" x:Key="commonChBox">
@@ -133,5 +140,17 @@
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
         <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+
+    <Style TargetType="ItemsControl" x:Key="tasksColumnPanel">
+        <Setter Property="Background" Value="{StaticResource taskBlueColor}"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="BorderBrush" Value="Gray"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Style.Resources>
+            <Style TargetType="{x:Type Border}">
+                <Setter Property="CornerRadius" Value="5"/>
+            </Style>
+        </Style.Resources>
     </Style>
 </ResourceDictionary>

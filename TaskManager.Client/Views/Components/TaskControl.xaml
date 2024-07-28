@@ -25,10 +25,12 @@
 
                 <TextBlock Grid.Row="0"
                            Text="{Binding Path=Model.Name}"
-                           Style="{StaticResource commonTBlock}"/>
+                           Style="{StaticResource commonTBlock}"
+                           TextWrapping="Wrap"/>
                 <TextBlock Grid.Row="1"
                            Text="{Binding Path=Model.Description}"
-                           Style="{StaticResource commonTBlock}"/>
+                           Style="{StaticResource commonTBlock}"
+                           TextWrapping="Wrap"/>
 
                 <StackPanel Grid.Row="2" Orientation="Horizontal">
                     <TextBlock Text="Creator: "

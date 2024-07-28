@@ -80,6 +80,17 @@ namespace TaskManager.Client.ViewModels
         }
         public List<UserModel> AllProjectUsers { get; set; }
 
+        private string _selectedColumnName;
+        public string SelectedColumnName
+        {
+            get => _selectedColumnName;
+            set
+            {
+                _selectedColumnName = value;
+                RaisePropertyChanged(nameof(SelectedColumnName));
+            }
+        }
+
         #endregion
 
         public DeskTasksPageViewModel(AuthToken token, DeskModel desk, DeskTasksPage page, MainWindowViewModel? mainWindowVM = null)
@@ -136,10 +147,10 @@ namespace TaskManager.Client.ViewModels
 
             foreach (var column in _desk.Columns)
             {
-                allTasks = allTasks.Where(t => t.Column == column).ToList();
+                var allColumnTasks = allTasks.Where(t => t.Column == column).ToList();
                 var allTasksClients = new List<TaskClient>();
 
-                foreach (var task in allTasks)
+                foreach (var task in allColumnTasks)
                 {
                     var taskClient = new TaskClient(task);
 
@@ -190,8 +201,14 @@ namespace TaskManager.Client.ViewModels
                 //column
 
                 var columnControl = new ItemsControl();
+                columnControl.Style = (Style)resource["tasksColumnPanel"];
                 Grid.SetRow(columnControl, 1);
                 Grid.SetColumn(columnControl, columnCount);
+
+                columnControl.Tag = header.Text;
+
+                columnControl.MouseEnter += (sender, e) => GetSelectedColumn(sender);
+                columnControl.MouseLeftButtonUp += (sender, e) => SendTaskToNewColumnAsync();
 
                 var user = await _usersRequestService.GetCurrentUser(_token);
                 var tasksViews = new List<TaskControl>();
@@ -216,7 +233,9 @@ namespace TaskManager.Client.ViewModels
 
                         taskControl.TaskGrid.Children.Add(editBtn);
                     }
-                    
+
+                    taskControl.MouseLeftButtonDown += (sender, e) => SelectedTask = task;
+
                     tasksViews.Add(taskControl);                    
                 }
 
@@ -295,6 +314,23 @@ namespace TaskManager.Client.ViewModels
             _commonViewService.SetFileForTask(SelectedTask.Model);
             SelectedTask = new TaskClient(SelectedTask.Model);
         }
+
+        private void GetSelectedColumn(object senderControl)
+        {
+            SelectedColumnName = ((ItemsControl)senderControl).Tag.ToString();            
+        }
+
+        private async void SendTaskToNewColumnAsync()
+        {
+            if (SelectedTask?.Model != null && SelectedTask.Model.Column != SelectedColumnName)
+            {
+                SelectedTask.Model.Column = SelectedColumnName;
+                await _tasksRequestService.UpdateTask(_token, SelectedTask.Model);
+                await UpdatePageAsync();
+                SelectedTask = null;
+            }
+        }
+
         #endregion
     }
 }
