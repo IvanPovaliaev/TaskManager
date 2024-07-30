@@ -1,0 +1,64 @@
+﻿<Window x:Class="TaskManager.Client.Views.AddWindows.UsersFromExcelWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TaskManager.Client.Views.AddWindows"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        xmlns:commonModels="clr-namespace:TaskManager.Common.Models;assembly=TaskManager.Common.Models"
+        mc:Ignorable="d"
+        Title="UsersFromExcelWindow"
+        Height="450" Width="800"
+        WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
+                            ObjectType="{x:Type system:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="commonModels:UserRole"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <Button Content="Select EXCEL file" Command="{Binding GetUsersFromExcelCommand}" 
+                Style="{StaticResource commonBtn}"/>
+        <ListView Grid.Row="1" ItemsSource="{Binding UsersFromExcel}" 
+                  SelectionChanged="ListView_SelectionChanged">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="FirstName" 
+                                    DisplayMemberBinding="{Binding Path=FirstName}"
+                                    Width="150"/>
+                    <GridViewColumn Header="Surname" 
+                                    DisplayMemberBinding="{Binding Path=Surname}"
+                                    Width="150"/>
+                    <GridViewColumn Header="Email" 
+                                    DisplayMemberBinding="{Binding Path=Email}"
+                                    Width="150"/>
+                    <GridViewColumn Header="Phone" 
+                                    DisplayMemberBinding="{Binding Path=Phone}"
+                                    Width="150"/>
+                    <GridViewColumn Header="Role" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox ItemsSource="{Binding Source={StaticResource dataFromEnum}}" 
+                                          SelectedItem="{Binding Path=Role}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Password" 
+                                    DisplayMemberBinding="{Binding Path=Password}"
+                                    Width="150"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button Grid.Row="2" Content="Load users" 
+                Command="{Binding AddUsersFromExcelCommand}"
+                Style="{StaticResource commonBtn}"/>
+    </Grid>
+</Window>

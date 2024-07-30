@@ -1,4 +1,5 @@
-﻿using Prism.Commands;
+﻿using DocumentFormat.OpenXml.EMMA;
+using Prism.Commands;
 using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Windows;
@@ -173,8 +174,9 @@ namespace TaskManager.Client.ViewModels
 
         private void OpenUsersManagement()
         {
-            SelectedPageName = _manageUsersButtonName;
-            _commonViewService.ShowMessage(_manageUsersButtonName);
+            var page = new UsersPage();
+            var model = new UsersPageViewModel(_token, page, this);
+            OpenPage(page, _userTasksButtonName, model);
         }
 
         #endregion

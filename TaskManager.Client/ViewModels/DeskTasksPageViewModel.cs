@@ -258,10 +258,10 @@ namespace TaskManager.Client.ViewModels
                     await UpdateTaskAsync();
                     break;
             }
-            await UpdatePageAsync();
+            UpdatePage();
             _commonViewService.CurrentOpenWindow?.Close();
         }
-        private async Task UpdatePageAsync()
+        private void UpdatePage()
         {
             SelectedTask = null;
             DeskTasksPage_LoadedAsync(this, new RoutedEventArgs());
@@ -307,7 +307,7 @@ namespace TaskManager.Client.ViewModels
         private async void DeleteTaskAsync()
         {
             await _tasksRequestService.DeleteTask(_token, SelectedTask.Model.Id);
-            UpdatePageAsync();
+            UpdatePage();
         }
         private void SelectFileForTask()
         {
@@ -326,7 +326,7 @@ namespace TaskManager.Client.ViewModels
             {
                 SelectedTask.Model.Column = SelectedColumnName;
                 await _tasksRequestService.UpdateTask(_token, SelectedTask.Model);
-                await UpdatePageAsync();
+                UpdatePage();
                 SelectedTask = null;
             }
         }

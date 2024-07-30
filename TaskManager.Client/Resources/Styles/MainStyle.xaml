@@ -130,6 +130,10 @@
         </Style.Triggers>
     </Style>
 
+    <Style TargetType="Border" x:Key="userBorderPanel" BasedOn="{StaticResource commonPanelBorder}">
+        <Setter Property="Width" Value="Auto"/>
+    </Style>
+
     <Style TargetType="CheckBox" x:Key="commonChBox">
         <Setter Property="BorderBrush" Value="{StaticResource commonBlueColor}"/>
         <Setter Property="VerticalAlignment" Value="Center"/>

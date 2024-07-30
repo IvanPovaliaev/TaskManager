@@ -14,7 +14,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Задача" Style="{StaticResource headerTBlock}"/>
+        <TextBlock Text="Task" Style="{StaticResource headerTBlock}"/>
         <ScrollViewer Grid.Row="1"  
                       VerticalScrollBarVisibility="Auto">
             <Grid Margin="10">

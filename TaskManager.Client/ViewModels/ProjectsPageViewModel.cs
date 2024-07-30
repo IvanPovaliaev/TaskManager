@@ -30,7 +30,6 @@ namespace TaskManager.Client.ViewModels
         #endregion
 
         #region PROPERTIES
-
         private AuthToken _token { get; set; }
         private Window _ownerWindow {  get; set; }
         private UsersRequestService _usersRequestService { get; set; }
