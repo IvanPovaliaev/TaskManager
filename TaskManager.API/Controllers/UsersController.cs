@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TaskManager.API.Models.Data;
 using TaskManager.API.Models.Services;
@@ -60,12 +61,19 @@ namespace TaskManager.API.Controllers
 
         [HttpPost("all")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateMultipleUsers([FromBody] IEnumerable<UserModel> usersModels)
+        public IActionResult CreateMultipleUsers([FromBody] IEnumerable<UserModel> usersModels)
         {
             if (!usersModels.IsNullOrEmpty())
                 return _usersService.CreateMultipleUsers(usersModels) ? Ok() : NotFound();
 
             return BadRequest();
+        }
+
+        [HttpGet("{id}/admin")]
+        public ActionResult<int?> GetProjectAdminId(int id)
+        {
+            var admin = _usersService.GetProjectAdmin(id);
+            return admin == null ? NotFound(null) : Ok(admin.Id);
         }
     }
 }

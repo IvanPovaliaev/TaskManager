@@ -48,6 +48,17 @@ namespace TaskManager.Client.ViewModels
             }
         }
 
+        public int? _currentUserAdminId;
+        public int? CurrentUserAdminId
+        {
+            get => _currentUserAdminId;
+            private set
+            {
+                _currentUserAdminId = value;
+                RaisePropertyChanged(nameof(CurrentUserAdminId));
+            }
+        }
+
         private ClientAction _typeActionWithProject;
         public ClientAction TypeActionWithProject
         {
@@ -137,6 +148,7 @@ namespace TaskManager.Client.ViewModels
         private async Task InitializeCurrentUserAsync()
         {
             CurrentUser = await _usersRequestService.GetCurrentUser(_token);
+            CurrentUserAdminId = await _usersRequestService.GetProjectUserAdmin(_token, CurrentUser.Id);
         }
         private async Task InitializeUserProjectsAsync()
         {
@@ -188,6 +200,14 @@ namespace TaskManager.Client.ViewModels
         {
             SelectedProject = await GetProjectClientByIdAsync(projectId);
 
+            var adminId = await _usersRequestService.GetProjectUserAdmin(_token, CurrentUser.Id);
+            
+            if (adminId != SelectedProject.Model.AdminId)
+            {
+                _commonViewService.ShowMessage("You are not admin!");
+                return;
+            }               
+
             TypeActionWithProject = ClientAction.Update;
             var window = new CreateOrUpdateProjectWindow();
             window.Owner = _ownerWindow;
@@ -227,6 +247,7 @@ namespace TaskManager.Client.ViewModels
         private async Task CreateProjectAsync()
         {
             var resultAction = await _projectsRequestService.CreateProject(_token, SelectedProject.Model);
+            CurrentUserAdminId = await _usersRequestService.GetProjectUserAdmin(_token, CurrentUser.Id);
             _commonViewService.ShowActionResult(resultAction, "New project created successfully");
         }
         private async Task UpdateProjectAsync()

@@ -51,7 +51,7 @@ namespace TaskManager.API.Controllers
 
             if (user.Role == UserRole.Admin || user.Role == UserRole.Editor)
             {
-                var admin = _db.ProjectAdmins.FirstOrDefault(a => a.Id == user.Id);
+                var admin = _db.ProjectAdmins.FirstOrDefault(a => a.UserId == user.Id);
                 if (admin == null)
                 {
                     admin = new ProjectAdmin(user);

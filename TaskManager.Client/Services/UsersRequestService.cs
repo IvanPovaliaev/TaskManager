@@ -62,5 +62,11 @@ namespace TaskManager.Client.Services
             var userJson = JsonConvert.SerializeObject(user);
             return await SendDataByUrl(HttpMethod.Patch, $"{_usersControllerUrl}{user.Id}", token, userJson);
         }
+
+        public async Task<int?> GetProjectUserAdmin(AuthToken token, int userId)
+        {
+            var response = await GetDataByUrl(HttpMethod.Get, $"{_usersControllerUrl}{userId}/admin", token);
+            return int.TryParse(response, out var result) ? result : null;
+        }
     }
 }

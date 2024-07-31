@@ -107,11 +107,17 @@ namespace TaskManager.API.Models.Services
             {
                 var newUsers = usersModels.Select(userM => new User(userM));
                 _db.Users.AddRange(newUsers);
-                _db.SaveChangesAsync();                
+                _db.SaveChanges();                
             });
         }
 
         public UserModel Get(int id) => _db.Users.FirstOrDefault(u => u.Id == id).ToDto();
+
+        public ProjectAdmin GetProjectAdmin(int userId)
+        {
+            var admin = _db.ProjectAdmins.FirstOrDefault(a => a.UserId == userId);
+            return admin;
+        }
 
         public IEnumerable<UserModel> GetAllByIds(IEnumerable<int> usersIds)
         {

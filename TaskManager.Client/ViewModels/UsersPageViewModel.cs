@@ -52,7 +52,7 @@ namespace TaskManager.Client.ViewModels
             }
         }
 
-        private List<UserModel> _selectedUsersFromExcel;
+        private List<UserModel> _selectedUsersFromExcel = [];
         public List<UserModel> SelectedUsersFromExcel
         {
             get => _selectedUsersFromExcel;
@@ -116,7 +116,6 @@ namespace TaskManager.Client.ViewModels
         #endregion
 
         #region METHODS
-
         private void UpdatePage()
         {
             SelectedUser = null;
@@ -125,7 +124,6 @@ namespace TaskManager.Client.ViewModels
             LoadAllUsersAsync(this, new RoutedEventArgs());
             _commonViewService.CurrentOpenWindow?.Close();
         }
-
         private async void OpenUpdateUserAsync(object userId)
         {
             if (userId == null) return;
@@ -176,9 +174,11 @@ namespace TaskManager.Client.ViewModels
         private void GetUsersFromExcel()
         {
             var filePath = _commonViewService.GetFileFromDialog(_excelDialogFilterPattern);
+
+            if (string.IsNullOrEmpty(filePath)) return;
+
             UsersFromExcel = _excelService.GetAllUsers(filePath);
         }
-
         private async void AddUsersFromExcelAsync()
         {
             if (SelectedUsersFromExcel != null && SelectedUsersFromExcel.Count != 0)
@@ -186,6 +186,7 @@ namespace TaskManager.Client.ViewModels
                 var result = await _usersRequestService.CreateMultipleUsers(_authToken, SelectedUsersFromExcel);
                 _commonViewService.ShowActionResult(result, "All users have been created successfully");
             }
+            UpdatePage();
         }
         #endregion
     }

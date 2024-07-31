@@ -176,7 +176,7 @@ namespace TaskManager.Client.ViewModels
         {
             var page = new UsersPage();
             var model = new UsersPageViewModel(_token, page, this);
-            OpenPage(page, _userTasksButtonName, model);
+            OpenPage(page, _manageUsersButtonName, model);
         }
 
         #endregion

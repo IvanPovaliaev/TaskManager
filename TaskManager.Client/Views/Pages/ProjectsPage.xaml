@@ -51,11 +51,13 @@
                                     <Button Content="Open" Command="{Binding Path=DataContext.ShowProjectInfoCommand,
                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                             CommandParameter="{Binding Path=Model.Id}"
-                                            Style="{StaticResource commonBtn}"/>
+                                            Style="{StaticResource commonBtn}"
+                                            MinHeight="30"/>
 
                                     <Button Content="Edit" Command="{Binding Path=DataContext.OpenUpdateProjectCommand,
                                             RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding Path=Model.Id}">
+                                            CommandParameter="{Binding Path=Model.Id}"
+                                            MinHeight="30">
                                         <Button.Style>
                                             <Style TargetType="Button" BasedOn="{StaticResource commonBtn}">
                                                 <Style.Triggers>
@@ -63,7 +65,7 @@
                                                         RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="User">
                                                         <Setter Property="IsEnabled" Value="False"/>
                                                         <Setter Property="Height" Value="0"/>
-                                                        <Setter Property="Visibility" Value="Hidden"/>
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -94,21 +96,23 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" Text="{Binding SelectedProject.Model.Name}"
                        Style="{StaticResource headerTBlock}"/>
             <TextBlock Grid.Row="1" Text="{Binding SelectedProject.Model.Description}"
                        Style="{StaticResource commonTBlock}"/>
-            <Button Grid.Row="2" Content="Add users" Command="{Binding OpenNewUsersToProjectCommand}">
+            <Button Grid.Row="2" Content="Add users"
+                    Command="{Binding OpenNewUsersToProjectCommand}"
+                    MinHeight="25">
                 <Button.Style>
                     <Style TargetType="Button" BasedOn="{StaticResource commonBtn}">
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding CurrentUser.Role}" Value="User">
                                 <Setter Property="IsEnabled" Value="False"/>
                                 <Setter Property="Height" Value="0"/>
-                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -116,7 +120,8 @@
             </Button>
             <Button Grid.Row="3" Content="Desks"
                     Command="{Binding OpenProjectDesksPageCommand}"
-                    Style="{StaticResource commonBtn}"/>
+                    Style="{StaticResource commonBtn}"
+                    MinHeight="25"/>
 
             <ListBox Grid.Row="4" 
                      ItemsSource="{Binding Path=ProjectUsers}" 
