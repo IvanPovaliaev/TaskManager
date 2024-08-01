@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TaskManager.API.Models;
 using TaskManager.API.Models.Data;
 using TaskManager.API.Models.Services;
 using TaskManager.Common.Models;

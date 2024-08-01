@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.EMMA;
-using Prism.Commands;
+﻿using Prism.Commands;
 using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Windows;

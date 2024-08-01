@@ -1,7 +1,4 @@
-﻿
-using System;
-using TaskManager.Client.Services;
-using TaskManager.Common.Models;
+﻿using TaskManager.Common.Models;
 
 namespace TaskManager.Client.Models
 {

@@ -16,7 +16,14 @@ namespace TaskManager.Client.Services
         {
             var url = $"{HOST}account/token";
             var resultStr = await GetDataByUrl(HttpMethod.Post, url, null, userName, password);
-            return JsonConvert.DeserializeObject<AuthToken>(resultStr);
+            try
+            {
+                return JsonConvert.DeserializeObject<AuthToken>(resultStr);
+            }
+            catch (JsonReaderException ex)
+            {
+                return null;
+            }
         }
 
         public async Task<UserModel> GetCurrentUser(AuthToken token)

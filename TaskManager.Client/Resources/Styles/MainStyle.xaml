@@ -91,7 +91,17 @@
         <Setter Property="FontSize" Value="20"/>
     </Style>
 
-     <Style TargetType="GridSplitter" x:Key="commonSplitter">
+    <Style TargetType="TextBlock" x:Key="placeholderTBlock" BasedOn="{StaticResource sharedTBlock}">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="{StaticResource commonGreyColor}"/>
+        <Setter Property="IsHitTestVisible" Value="False"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="5 0 0 0"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+    </Style>
+
+    <Style TargetType="GridSplitter" x:Key="commonSplitter">
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="{StaticResource commonGreyColor}"/>
         <Setter Property="Margin" Value="2"/>

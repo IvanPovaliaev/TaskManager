@@ -42,6 +42,7 @@ namespace TaskManager.API.Controllers
             var pass = userData.Item2;
             var identity = _userService.GetIdentity(login, pass);
 
+            if (identity is null) return NotFound("User not found");
 
             var now = DateTime.UtcNow;
             var jwt = new JwtSecurityToken(

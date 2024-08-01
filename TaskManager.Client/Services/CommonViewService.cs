@@ -68,8 +68,8 @@ namespace TaskManager.Client.Services
         {
             var saveFileDialog = new SaveFileDialog
             {
-                FileName = fileName ?? "downloadedFile.txt", // Default file name
-                Filter = _allFilesDialogFilterPattern // File types filter
+                FileName = fileName ?? "downloadedFile.txt",
+                Filter = _allFilesDialogFilterPattern
             };
 
             if (saveFileDialog.ShowDialog() == true)

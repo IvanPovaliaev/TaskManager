@@ -13,7 +13,8 @@ namespace TaskManager.Client.ViewModels
 {
     public class LoginViewModel : BindableBase
     {
-        private UsersRequestService _usersRequestService { get; set; }        
+        private UsersRequestService _usersRequestService { get; set; }  
+        private CommonViewService _commonViewService { get; set; }
 
         #region COMMANDS
         public DelegateCommand<object> GetUserFromDBCommand { get; private set; }
@@ -60,16 +61,41 @@ namespace TaskManager.Client.ViewModels
                 RaisePropertyChanged(nameof(AuthToken));
             }
         }
+
+        private Login _loginWindow;
+        public Login LoginWindow
+        {
+            get => _loginWindow;
+            set
+            {
+                _loginWindow = value;
+                LoginWindow.UserPassword.PasswordChanged += PasswordChanged;
+                RaisePropertyChanged(nameof(LoginWindow));
+            }
+        }
         #endregion
 
         public LoginViewModel()
         {
             _usersRequestService = new UsersRequestService();
+            _commonViewService = new CommonViewService();
+
             CurrentUserCache = GetUserCache();
 
             GetUserFromDBCommand = new DelegateCommand<object>(GetUserFromDB);
-            LoginFromCacheCommand = new DelegateCommand<object>(LoginFromCache);
+            LoginFromCacheCommand = new DelegateCommand<object>(LoginFromCache);            
         }
+
+        #region EVENTS METHODS
+
+        public void PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            var pasBox = (PasswordBox)sender;
+            if (pasBox.Password.Length > 0) LoginWindow.PasswordPlaceholder.Visibility = Visibility.Collapsed;
+            else LoginWindow.PasswordPlaceholder.Visibility = Visibility.Visible;
+        }
+
+        #endregion
 
         #region METHODS
         private async void GetUserFromDB(object parameter)
@@ -86,7 +112,11 @@ namespace TaskManager.Client.ViewModels
             UserPassword = passBox.Password;
             AuthToken = await _usersRequestService.GetToken(UserLogin, UserPassword);
 
-            if (AuthToken == null) return;
+            if (AuthToken == null)
+            {
+                _commonViewService.ShowMessage("User not found!");
+                return;
+            }
 
             CurrentUser = await _usersRequestService.GetCurrentUser(AuthToken);
 
@@ -111,7 +141,7 @@ namespace TaskManager.Client.ViewModels
             using (var sw = new StreamWriter(_cachePath, false, System.Text.Encoding.Default))
             {
                 sw.Write(jsonUserCache);
-                MessageBox.Show("Succes");
+                MessageBox.Show("Success");
             }
         }
 

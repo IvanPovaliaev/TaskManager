@@ -14,22 +14,65 @@
     
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Vertical"
+        <TextBlock Grid.Row="0"
+                   Text="PLEASE LOG IN"
+                   Style="{StaticResource headerTBlock}"/>
+        <StackPanel Grid.Row="1" Orientation="Vertical"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"                    
                     Width="250">
-        <TextBox Text="{Binding UserLogin}" Style="{StaticResource commonTBox}"/>
-        <PasswordBox x:Name="UserPassword" Style="{StaticResource commonPBox}"/>
-        <Button Content="OK"
-                Command="{Binding GetUserFromDBCommand}"
-                CommandParameter="{Binding ElementName=UserPassword}"
-                Style="{StaticResource commonBtn}"
-                Width="100"/>
+            <Canvas x:Name="loginCanvas"
+                    Height="{Binding Height, ElementName=loginTextBox}"
+                    HorizontalAlignment="Stretch">
+                <TextBox x:Name="loginTextBox" Text="{Binding UserLogin}"
+                         Style="{StaticResource commonTBox}"
+                         Width="{Binding ActualWidth, ElementName=loginCanvas}"/>
+
+                <TextBlock Text="example@example.com"
+                           FontSize="{Binding FontSize, ElementName=loginTextBox}"
+                           Height="{Binding Height, ElementName=loginTextBox}"
+                           Width="{Binding Width, ElementName=loginTextBox}">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}"
+                               BasedOn="{StaticResource placeholderTBlock}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=loginTextBox}" Value="">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Canvas>
+
+            <Canvas x:Name="passwordCanvas"
+                    Height="{Binding Height, ElementName=UserPassword}"
+                    HorizontalAlignment="Stretch">
+
+                <PasswordBox x:Name="UserPassword"
+                             Style="{StaticResource commonPBox}"
+                             Width="{Binding ActualWidth, ElementName=passwordCanvas}"/>
+
+                <TextBlock x:Name ="PasswordPlaceholder"
+                           Text="enter password"
+                           Style="{StaticResource placeholderTBlock}"
+                           FontSize="{Binding FontSize, ElementName=UserPassword}"
+                           Height="{Binding Height, ElementName=UserPassword}"
+                           Width="{Binding Width, ElementName=UserPassword}"/>
+            </Canvas>
+            
+            <Button Content="OK"
+                    Command="{Binding GetUserFromDBCommand}"
+                    CommandParameter="{Binding ElementName=UserPassword}"
+                    Style="{StaticResource commonBtn}"
+                    Width="100"/>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Vertical"
+        <StackPanel Grid.Row="2" Orientation="Vertical"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Center">
             <StackPanel.Style>
