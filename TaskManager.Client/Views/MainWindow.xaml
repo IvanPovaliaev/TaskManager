@@ -7,8 +7,8 @@
         mc:Ignorable="d"
         Title="MainWindow"
         Height="450" Width="800"
-        MinHeight="200" MinWidth="300"
-        WindowStartupLocation="CenterScreen">
+        MinHeight="200" MinWidth="450"
+        WindowStartupLocation="CenterScreen" Icon="/Resources/Images/AppIcon.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150" MinWidth="50" MaxWidth="150"/>

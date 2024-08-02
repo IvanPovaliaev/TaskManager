@@ -10,26 +10,42 @@
 
     <Grid>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+
+            <Image Source="{Binding CurrentUserPhoto}"
+                   Width="200"
+                   Height="200"/>
+
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="FirstName: " Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="FirstName: " Style="{StaticResource commonTBlock}"
+                           FontWeight="Bold"/>
                 <TextBlock Text="{Binding CurrentUser.FirstName}" Style="{StaticResource commonTBlock}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Surname: " Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="Surname: " Style="{StaticResource commonTBlock}"
+                           FontWeight="Bold"/>
                 <TextBlock Text="{Binding CurrentUser.Surname}" Style="{StaticResource commonTBlock}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Phone number: " Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="Phone number: " Style="{StaticResource commonTBlock}"
+                           FontWeight="Bold"/>
                 <TextBlock Text="{Binding CurrentUser.Phone}" Style="{StaticResource commonTBlock}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="E-mail: " Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="E-mail: " Style="{StaticResource commonTBlock}"
+                           FontWeight="Bold"/>
                 <TextBlock Text="{Binding CurrentUser.Email}" Style="{StaticResource commonTBlock}"/>
             </StackPanel>
-                
+
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Role: " Style="{StaticResource commonTBlock}"
+                           FontWeight="Bold"/>
+                <TextBlock Text="{Binding CurrentUser.Role}" Style="{StaticResource commonTBlock}"/>
+            </StackPanel>
+
         </StackPanel>
     </Grid>
 </Page>

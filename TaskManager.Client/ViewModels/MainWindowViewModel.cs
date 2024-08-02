@@ -3,7 +3,9 @@ using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using TaskManager.Client.Models;
+using TaskManager.Client.Models.Extensions;
 using TaskManager.Client.Services;
 using TaskManager.Client.Views;
 using TaskManager.Client.Views.Pages;
@@ -98,6 +100,16 @@ namespace TaskManager.Client.ViewModels
                 RaisePropertyChanged(nameof(SelectedPage));
             }
         }
+        private BitmapImage _currentUserPhoto;
+        public BitmapImage CurrentUserPhoto
+        {
+            get => _currentUserPhoto;
+            set
+            {
+                _currentUserPhoto = value;
+                RaisePropertyChanged(nameof(CurrentUserPhoto));
+            }
+        }
 
         #endregion
 
@@ -107,6 +119,7 @@ namespace TaskManager.Client.ViewModels
 
             Token = token;
             CurrentUser = currentUser;
+            CurrentUserPhoto = CurrentUser.LoadPhoto();
             _currentWindow = currentWindow;
 
             OpenMyInfoPageCommand = new DelegateCommand(OpenMyInfoPage);

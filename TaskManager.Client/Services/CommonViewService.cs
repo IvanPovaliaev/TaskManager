@@ -30,7 +30,7 @@ namespace TaskManager.Client.Services
         {
             var filepath = string.Empty;
 
-            var dialog = new Microsoft.Win32.OpenFileDialog();
+            var dialog = new OpenFileDialog();
             dialog.Filter = filter;
 
             bool? result = dialog.ShowDialog();
