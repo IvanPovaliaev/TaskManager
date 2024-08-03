@@ -12,10 +12,10 @@ namespace TaskManager.Client.Services
     {
         private string _usersControllerUrl = $"{HOST}users/";
 
-        public async Task<AuthToken> GetToken(string userName, string password)
+        public async Task<AuthToken> GetTokenAsync(string userName, string password)
         {
             var url = $"{HOST}account/token";
-            var resultStr = await GetDataByUrl(HttpMethod.Post, url, null, userName, password);
+            var resultStr = await GetDataByUrlAsync(HttpMethod.Post, url, null, userName, password);
             try
             {
                 return JsonConvert.DeserializeObject<AuthToken>(resultStr);
@@ -26,53 +26,53 @@ namespace TaskManager.Client.Services
             }
         }
 
-        public async Task<UserModel> GetCurrentUser(AuthToken token)
+        public async Task<UserModel> GetCurrentUserAsync(AuthToken token)
         {
-            var response = await GetDataByUrl(HttpMethod.Get, $"{HOST}account/info", token);
+            var response = await GetDataByUrlAsync(HttpMethod.Get, $"{HOST}account/info", token);
             var user = JsonConvert.DeserializeObject<UserModel>(response);
             return user;
         }
 
-        public async Task<UserModel> GetUserById(AuthToken token, int userId)
+        public async Task<UserModel> GetUserByIdAsync(AuthToken token, int userId)
         {
-            var response = await GetDataByUrl(HttpMethod.Get, $"{_usersControllerUrl}{userId}", token);
+            var response = await GetDataByUrlAsync(HttpMethod.Get, $"{_usersControllerUrl}{userId}", token);
             var user = JsonConvert.DeserializeObject<UserModel>(response);
             return user;
         }
 
-        public async Task<HttpStatusCode> CreateUser(AuthToken token, UserModel user)
+        public async Task<HttpResponseMessage> CreateUserAsync(AuthToken token, UserModel user)
         {
             var userJson = JsonConvert.SerializeObject(user);
-            return await SendDataByUrl(HttpMethod.Post, _usersControllerUrl, token, userJson);
+            return await SendDataByUrlAsync(HttpMethod.Post, _usersControllerUrl, token, userJson);
         }
 
-        public async Task<List<UserModel>> GetAllUsers(AuthToken token)
+        public async Task<List<UserModel>> GetAllUsersAsync(AuthToken token)
         {
-            var response = await GetDataByUrl(HttpMethod.Get, _usersControllerUrl, token);
+            var response = await GetDataByUrlAsync(HttpMethod.Get, _usersControllerUrl, token);
             var users = JsonConvert.DeserializeObject<List<UserModel>>(response);
             return users;
         }
 
-        public async Task<HttpStatusCode> DeleteUser(AuthToken token, int userId)
+        public async Task<HttpStatusCode> DeleteUserAsync(AuthToken token, int userId)
         {
-            return await DeleteDataByUrl($"{_usersControllerUrl}{userId}", token);
+            return await DeleteDataByUrlAsync($"{_usersControllerUrl}{userId}", token);
         }
 
-        public async Task<HttpStatusCode> CreateMultipleUsers(AuthToken token, List<UserModel> users)
+        public async Task<HttpResponseMessage> CreateMultipleUsersAsync(AuthToken token, List<UserModel> users)
         {
             var userJson = JsonConvert.SerializeObject(users);
-            return await SendDataByUrl(HttpMethod.Post, $"{_usersControllerUrl}all", token, userJson);
+            return await SendDataByUrlAsync(HttpMethod.Post, $"{_usersControllerUrl}all", token, userJson);
         }
 
-        public async Task<HttpStatusCode> UpdateUser(AuthToken token, UserModel user)
+        public async Task<HttpResponseMessage> UpdateUserAsync(AuthToken token, UserModel user)
         {
             var userJson = JsonConvert.SerializeObject(user);
-            return await SendDataByUrl(HttpMethod.Patch, $"{_usersControllerUrl}{user.Id}", token, userJson);
+            return await SendDataByUrlAsync(HttpMethod.Patch, $"{_usersControllerUrl}{user.Id}", token, userJson);
         }
 
         public async Task<int?> GetProjectUserAdmin(AuthToken token, int userId)
         {
-            var response = await GetDataByUrl(HttpMethod.Get, $"{_usersControllerUrl}{userId}/admin", token);
+            var response = await GetDataByUrlAsync(HttpMethod.Get, $"{_usersControllerUrl}{userId}/admin", token);
             return int.TryParse(response, out var result) ? result : null;
         }
     }

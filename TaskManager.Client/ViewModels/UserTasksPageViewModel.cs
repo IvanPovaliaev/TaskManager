@@ -33,7 +33,7 @@ namespace TaskManager.Client.ViewModels
 
         private async void InitializeAllTasksAsync()
         {
-            var tasks = await _tasksRequestService.GetTasksForCurrentUser(_token);
+            var tasks = await _tasksRequestService.GetTasksForCurrentUserAsync(_token);
 
             var allTasks = new List<TaskClient>();
 
@@ -41,10 +41,10 @@ namespace TaskManager.Client.ViewModels
             {
                 var taskClient = new TaskClient(task);
                 if (task.CreatorId != null)
-                    taskClient.Creator = await _usersRequestService.GetUserById(_token, (int)(task.CreatorId));
+                    taskClient.Creator = await _usersRequestService.GetUserByIdAsync(_token, (int)(task.CreatorId));
 
                 if (task.ExecutorId != null)
-                    taskClient.Executor = await _usersRequestService.GetUserById(_token, (int)(task.ExecutorId));
+                    taskClient.Executor = await _usersRequestService.GetUserByIdAsync(_token, (int)(task.ExecutorId));
 
                 allTasks.Add(taskClient);
             }

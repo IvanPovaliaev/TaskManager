@@ -123,7 +123,7 @@ namespace TaskManager.Client.ViewModels
         #region METHODS
         private async Task InitializeAllDesksAsync()
         {
-            var desks = await _desksRequestService.GetDesksForCurrentUser(_token);
+            var desks = await _desksRequestService.GetDesksForCurrentUserAsync(_token);
 
             AllDesks = desks?.Select(desk => new ModelClient<DeskModel>(desk)).ToList();
         }

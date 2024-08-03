@@ -152,7 +152,7 @@ namespace TaskManager.Client.ViewModels
         #region METHODS
         private async void OpenMyInfoPageAsync()
         {
-            var curUser = await _usersRequestService.GetCurrentUser(_token);
+            var curUser = await _usersRequestService.GetCurrentUserAsync(_token);
             CurrentUser = curUser;
             CurrentUserPhoto = CurrentUser.LoadPhoto();
             var page = new UserInfoPage();

@@ -28,6 +28,12 @@ namespace TaskManager.API.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult CreateUser([FromBody] UserModel userModel)
         {
+            if (_db.Users.Any(u => u.Email == userModel.Email))
+                return BadRequest("User with this email already exist!");
+
+            if (string.IsNullOrEmpty(userModel.Email))
+                return BadRequest("Empty email data");
+
             if (userModel != null)           
                 return _usersService.Create(userModel) ? Ok() : NotFound();
 
@@ -38,6 +44,12 @@ namespace TaskManager.API.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult UpdateUser(int id, [FromBody] UserModel userModel)
         {
+            if (_db.Users.Any(u => u.Email == userModel.Email))
+                return BadRequest("User with this email already exist!");
+
+            if (string.IsNullOrEmpty(userModel.Email))
+                return BadRequest("Empty email data");
+
             if (userModel != null)
                 return _usersService.Update(id, userModel) ? Ok() : NotFound();
 

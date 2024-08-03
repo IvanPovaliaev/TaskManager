@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
@@ -113,7 +114,7 @@ namespace TaskManager.Client.ViewModels
         #region EVENTS
         private async void LoadAllUsersAsync(object sender, RoutedEventArgs e)
         {
-            var allUsers = await _usersRequestService.GetAllUsers(_authToken);
+            var allUsers = await _usersRequestService.GetAllUsersAsync(_authToken);
             AllUsers = allUsers.Select(user => new UserModelClient(user)).ToList();
         }
         #endregion
@@ -132,7 +133,7 @@ namespace TaskManager.Client.ViewModels
             if (userId == null) return;
             TypeActionWithUser = ClientAction.Update;
 
-            var selectedUser = await _usersRequestService.GetUserById(_authToken, (int)userId);
+            var selectedUser = await _usersRequestService.GetUserByIdAsync(_authToken, (int)userId);
 
             SelectedUser = new UserModelClient(selectedUser);
 
@@ -153,7 +154,7 @@ namespace TaskManager.Client.ViewModels
         {
             if (userId !=  null)
             {
-                await _usersRequestService.DeleteUser(_authToken, (int)userId);
+                await _usersRequestService.DeleteUserAsync(_authToken, (int)userId);
                 UpdatePage();
             }
                 
@@ -163,14 +164,29 @@ namespace TaskManager.Client.ViewModels
             switch (TypeActionWithUser)
             {
                 case ClientAction.Create:
-                    await _usersRequestService.CreateUser(_authToken, SelectedUser.Model);
+                    await CreateUserAsync();
                     break;
                 case ClientAction.Update:
-                    await _usersRequestService.UpdateUser(_authToken, SelectedUser.Model);
+                    await UpdateUserAsync();
                     break;
-            }
-            UpdatePage();            
+            }                       
         }
+
+        private async Task CreateUserAsync()
+        {
+            var resultAction = await _usersRequestService.CreateUserAsync(_authToken, SelectedUser.Model);          
+
+            _commonViewService.ShowActionResult(resultAction.StatusCode, "New user created successfully");
+            if (resultAction.IsSuccessStatusCode) UpdatePage();
+        }
+        public async Task UpdateUserAsync()
+        {
+            var resultAction = await _usersRequestService.UpdateUserAsync(_authToken, SelectedUser.Model);
+
+            _commonViewService.ShowActionResult(resultAction.StatusCode, "User updated successfully");
+            if (resultAction.IsSuccessStatusCode) UpdatePage();
+        }
+
         private void OpenSelectUsersFromExcel()
         {
             var wnd = new UsersFromExcelWindow();
@@ -189,12 +205,11 @@ namespace TaskManager.Client.ViewModels
         {
             if (SelectedUsersFromExcel != null && SelectedUsersFromExcel.Count != 0)
             {
-                var result = await _usersRequestService.CreateMultipleUsers(_authToken, SelectedUsersFromExcel);
-                _commonViewService.ShowActionResult(result, "All users have been created successfully");
+                var result = await _usersRequestService.CreateMultipleUsersAsync(_authToken, SelectedUsersFromExcel);
+                _commonViewService.ShowActionResult(result.StatusCode, "All users have been created successfully");
             }
             UpdatePage();
         }
-
         public void SelectPhotoForUser()
         {
             if (SelectedUser?.Model == null) return;

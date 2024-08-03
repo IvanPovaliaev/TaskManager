@@ -1,5 +1,4 @@
-﻿
-namespace TaskManager.Client.Models
+﻿namespace TaskManager.Client.Models
 {
     public enum ClientAction
     {

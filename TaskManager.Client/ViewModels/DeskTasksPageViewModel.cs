@@ -119,14 +119,14 @@ namespace TaskManager.Client.ViewModels
         {
             await GetTaskByColumns(_desk.Id);
 
-            var project = await _projectsRequestService.GetProjectById(_token, _desk.ProjectId);
+            var project = await _projectsRequestService.GetProjectByIdAsync(_token, _desk.ProjectId);
             var projectUsers = new List<UserModel>();
 
             if (project?.UsersIds != null)
             {
                 foreach (var userId in project.UsersIds)
                 {
-                    var user = await _usersRequestService.GetUserById(_token, userId);
+                    var user = await _usersRequestService.GetUserByIdAsync(_token, userId);
                     projectUsers.Add(user);
                 }
             }
@@ -143,7 +143,7 @@ namespace TaskManager.Client.ViewModels
         {
             var tasksByColumns = new Dictionary<string, List<TaskClient>>();
 
-            var allTasks = await _tasksRequestService.GetTasksByDesk(_token, deskId);
+            var allTasks = await _tasksRequestService.GetTasksByDeskAsync(_token, deskId);
 
             foreach (var column in _desk.Columns)
             {
@@ -155,10 +155,10 @@ namespace TaskManager.Client.ViewModels
                     var taskClient = new TaskClient(task);
 
                     if (taskClient.Model?.CreatorId != null)
-                        taskClient.Creator = await _usersRequestService.GetUserById(_token, (int)taskClient.Model.CreatorId);
+                        taskClient.Creator = await _usersRequestService.GetUserByIdAsync(_token, (int)taskClient.Model.CreatorId);
 
                     if (taskClient.Model?.ExecutorId != null)
-                        taskClient.Executor = await _usersRequestService.GetUserById(_token, (int)taskClient.Model.ExecutorId);
+                        taskClient.Executor = await _usersRequestService.GetUserByIdAsync(_token, (int)taskClient.Model.ExecutorId);
 
                     allTasksClients.Add(taskClient);
                 };
@@ -210,7 +210,7 @@ namespace TaskManager.Client.ViewModels
                 columnControl.MouseEnter += (sender, e) => GetSelectedColumn(sender);
                 columnControl.MouseLeftButtonUp += (sender, e) => SendTaskToNewColumnAsync();
 
-                var user = await _usersRequestService.GetCurrentUser(_token);
+                var user = await _usersRequestService.GetCurrentUserAsync(_token);
                 var tasksViews = new List<TaskControl>();
 
                 foreach (var task in column.Value)
@@ -295,18 +295,18 @@ namespace TaskManager.Client.ViewModels
             if (SelectedTaskExecutor != null)
                 SelectedTask.Model.ExecutorId = SelectedTaskExecutor.Id;
 
-            var resultAction = await _tasksRequestService.CreateTask(_token, SelectedTask.Model);
-            _commonViewService.ShowActionResult(resultAction, "New task created successfully");
+            var resultAction = await _tasksRequestService.CreateTaskAsync(_token, SelectedTask.Model);
+            _commonViewService.ShowActionResult(resultAction.StatusCode, "New task created successfully");
         }
         public async Task UpdateTaskAsync()
         {
             SelectedTask.Model.ExecutorId = SelectedTaskExecutor.Id;
-            var resultAction = await _tasksRequestService.UpdateTask(_token, SelectedTask.Model);
-            _commonViewService.ShowActionResult(resultAction, "Task updated successfully");
+            var resultAction = await _tasksRequestService.UpdateTaskAsync(_token, SelectedTask.Model);
+            _commonViewService.ShowActionResult(resultAction.StatusCode, "Task updated successfully");
         }
         private async void DeleteTaskAsync()
         {
-            await _tasksRequestService.DeleteTask(_token, SelectedTask.Model.Id);
+            await _tasksRequestService.DeleteTaskAsync(_token, SelectedTask.Model.Id);
             UpdatePage();
         }
         private void SelectFileForTask()
@@ -325,7 +325,7 @@ namespace TaskManager.Client.ViewModels
             if (SelectedTask?.Model != null && SelectedTask.Model.Column != SelectedColumnName)
             {
                 SelectedTask.Model.Column = SelectedColumnName;
-                await _tasksRequestService.UpdateTask(_token, SelectedTask.Model);
+                await _tasksRequestService.UpdateTaskAsync(_token, SelectedTask.Model);
                 UpdatePage();
                 SelectedTask = null;
             }

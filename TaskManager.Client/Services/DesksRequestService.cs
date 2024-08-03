@@ -12,44 +12,44 @@ namespace TaskManager.Client.Services
     {
         private string _desksControllerUrl = $"{HOST}desks/";
 
-        public async Task<List<DeskModel>> GetDesksForCurrentUser(AuthToken token)
+        public async Task<List<DeskModel>> GetDesksForCurrentUserAsync(AuthToken token)
         {
-            var response = await GetDataByUrl(HttpMethod.Get, _desksControllerUrl, token);
+            var response = await GetDataByUrlAsync(HttpMethod.Get, _desksControllerUrl, token);
             var desks = JsonConvert.DeserializeObject<List<DeskModel>>(response);
             return desks;
         }
 
-        public async Task<DeskModel> GetDeskById(AuthToken token, int deskId)
+        public async Task<DeskModel> GetDeskByIdAsync(AuthToken token, int deskId)
         {
-            var response = await GetDataByUrl(HttpMethod.Get, $"{_desksControllerUrl}{deskId}", token);
+            var response = await GetDataByUrlAsync(HttpMethod.Get, $"{_desksControllerUrl}{deskId}", token);
             var desk = JsonConvert.DeserializeObject<DeskModel>(response);
             return desk;
         }
-        public async Task<List<DeskModel>> GetDesksByProject(AuthToken token, int projectId)
+        public async Task<List<DeskModel>> GetDesksByProjectAsync(AuthToken token, int projectId)
         {
             var parameters = new Dictionary<string, string>();
             parameters["projectId"] = projectId.ToString();
 
-            var response = await GetDataByUrl(HttpMethod.Get, $"{_desksControllerUrl}project", token, null, null, parameters);
+            var response = await GetDataByUrlAsync(HttpMethod.Get, $"{_desksControllerUrl}project", token, null, null, parameters);
             var desk = JsonConvert.DeserializeObject<List<DeskModel>>(response);
             return desk;
         }
 
-        public async Task<HttpStatusCode> CreateDesk(AuthToken token, DeskModel desk)
+        public async Task<HttpResponseMessage> CreateDeskAsync(AuthToken token, DeskModel desk)
         {
             var deskJson = JsonConvert.SerializeObject(desk);
-            return await SendDataByUrl(HttpMethod.Post, _desksControllerUrl, token, deskJson);
+            return await SendDataByUrlAsync(HttpMethod.Post, _desksControllerUrl, token, deskJson);
         }
 
-        public async Task<HttpStatusCode> UpdateDesk(AuthToken token, DeskModel desk)
+        public async Task<HttpResponseMessage> UpdateDeskAsync(AuthToken token, DeskModel desk)
         {
             var deskJson = JsonConvert.SerializeObject(desk);
-            return await SendDataByUrl(HttpMethod.Patch, $"{_desksControllerUrl}{desk.Id}", token, deskJson);
+            return await SendDataByUrlAsync(HttpMethod.Patch, $"{_desksControllerUrl}{desk.Id}", token, deskJson);
         }
 
-        public async Task<HttpStatusCode> DeleteDesk(AuthToken token, int deskId)
+        public async Task<HttpStatusCode> DeleteDeskAsync(AuthToken token, int deskId)
         {
-            return await DeleteDataByUrl($"{_desksControllerUrl}{deskId}", token);
+            return await DeleteDataByUrlAsync($"{_desksControllerUrl}{deskId}", token);
         }
     }
 }

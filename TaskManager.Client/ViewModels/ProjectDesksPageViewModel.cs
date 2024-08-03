@@ -131,11 +131,11 @@ namespace TaskManager.Client.ViewModels
         #region METHODS
         private async Task InitializeCurrentUserAsync()
         {
-            CurrentUser = await _usersRequestService.GetCurrentUser(_token);
+            CurrentUser = await _usersRequestService.GetCurrentUserAsync(_token);
         }
         private async Task LoadProjectDesksAsync()
         {
-            var desks = await _desksRequestService.GetDesksByProject(_token, _project.Id);
+            var desks = await _desksRequestService.GetDesksByProjectAsync(_token, _project.Id);
 
             ProjectDesks = desks?.Select(desk => new ModelClient<DeskModel>(desk)).ToList();
         }
@@ -190,8 +190,8 @@ namespace TaskManager.Client.ViewModels
             SelectedDesk.Model.Columns = ColumnsForNewDesk.Select(c => c.Value).ToArray();
             SelectedDesk.Model.ProjectId = _project.Id;
 
-            var resultAction = await _desksRequestService.CreateDesk(_token, SelectedDesk.Model);
-            _commonViewService.ShowActionResult(resultAction, "New desk created successfully");
+            var resultAction = await _desksRequestService.CreateDeskAsync(_token, SelectedDesk.Model);
+            _commonViewService.ShowActionResult(resultAction.StatusCode, "New desk created successfully");
         }
         private async void DeleteDeskAsync()
         {

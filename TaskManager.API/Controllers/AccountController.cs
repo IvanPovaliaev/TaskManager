@@ -52,6 +52,7 @@ namespace TaskManager.API.Controllers
                 claims: identity.Claims,
                 expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
                 signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var response = new
@@ -61,31 +62,31 @@ namespace TaskManager.API.Controllers
             };
             return Ok(response);
         }
-        [Authorize]
-        [HttpPatch("update")]
-        public IActionResult UpdateUser([FromBody] UserModel userModel)
-        {
-            if (userModel != null)
-            {
-                var userName = HttpContext.User.Identity.Name;
+        //[Authorize]
+        //[HttpPatch("update")]
+        //public IActionResult UpdateUser([FromBody] UserModel userModel)
+        //{
+        //    if (userModel != null)
+        //    {
+        //        var userName = HttpContext.User.Identity.Name;
 
-                var user = _db.Users.FirstOrDefault(u => u.Email == userName);
+        //        var user = _db.Users.FirstOrDefault(u => u.Email == userName);
 
-                if (user != null)
-                {
-                    user.FirstName = userModel.FirstName;
-                    user.Surname = userModel.Surname;
-                    user.Password = userModel.Password;
-                    user.Phone = userModel.Phone;
-                    user.Photo = userModel.Photo;
+        //        if (user != null)
+        //        {
+        //            user.FirstName = userModel.FirstName;
+        //            user.Surname = userModel.Surname;
+        //            user.Password = userModel.Password;
+        //            user.Phone = userModel.Phone;
+        //            user.Photo = userModel.Photo;
 
-                    _db.Users.Update(user);
-                    _db.SaveChanges();
-                    return Ok();
-                }
-                return NotFound();
-            }
-            return BadRequest();
-        }
+        //            _db.Users.Update(user);
+        //            _db.SaveChanges();
+        //            return Ok();
+        //        }
+        //        return NotFound();
+        //    }
+        //    return BadRequest();
+        //}
     }
 }

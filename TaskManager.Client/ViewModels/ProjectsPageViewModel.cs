@@ -136,11 +136,11 @@ namespace TaskManager.Client.ViewModels
         #region METHODS
         private async Task InitializeCurrentUserAsync()
         {
-            CurrentUser = await _usersRequestService.GetCurrentUser(_token);
+            CurrentUser = await _usersRequestService.GetCurrentUserAsync(_token);
         }
         private async Task InitializeUserProjectsAsync()
         {
-            var userProjects = (await _projectsRequestService.GetAllProjects(_token))
+            var userProjects = (await _projectsRequestService.GetAllProjectsAsync(_token))
                 .Select(project => new ModelClient<ProjectModel>(project)).ToList();
 
             UserProjects = userProjects;
@@ -159,7 +159,7 @@ namespace TaskManager.Client.ViewModels
             {
                 foreach (var userId in SelectedProject.Model.UsersIds)
                 {
-                    var user = await _usersRequestService.GetUserById(_token, userId);
+                    var user = await _usersRequestService.GetUserByIdAsync(_token, userId);
                     projectUsers.Add(user);
                 }
             }
@@ -168,7 +168,7 @@ namespace TaskManager.Client.ViewModels
         }
         private async Task LoadNewUsersForSelectedProjectAsync()
         {
-            var allUsers = await _usersRequestService.GetAllUsers(_token);
+            var allUsers = await _usersRequestService.GetAllUsersAsync(_token);
 
             var result = allUsers.Where(user => ProjectUsers.All(u => u.Id != user.Id)).ToList();
 
@@ -210,7 +210,7 @@ namespace TaskManager.Client.ViewModels
         {
             try
             {
-                var selectedProject = await _projectsRequestService.GetProjectById(_token, (int)projectId);
+                var selectedProject = await _projectsRequestService.GetProjectByIdAsync(_token, (int)projectId);
                 return new ModelClient<ProjectModel>(selectedProject);
             }
             catch(FormatException ex)
@@ -234,17 +234,17 @@ namespace TaskManager.Client.ViewModels
         }
         private async Task CreateProjectAsync()
         {
-            var resultAction = await _projectsRequestService.CreateProject(_token, SelectedProject.Model);
-            _commonViewService.ShowActionResult(resultAction, "New project created successfully");
+            var resultAction = await _projectsRequestService.CreateProjectAsync(_token, SelectedProject.Model);
+            _commonViewService.ShowActionResult(resultAction.StatusCode, "New project created successfully");
         }
         private async Task UpdateProjectAsync()
         {
-            var resultAction = await _projectsRequestService.UpdateProject(_token, SelectedProject.Model);
-            _commonViewService.ShowActionResult(resultAction, "Project updated successfully");
+            var resultAction = await _projectsRequestService.UpdateProjectAsync(_token, SelectedProject.Model);
+            _commonViewService.ShowActionResult(resultAction.StatusCode, "Project updated successfully");
         }
         private async void DeleteProjectAsync()
         {
-            var resultAction = await _projectsRequestService.DeleteProject(_token, SelectedProject.Model.Id);
+            var resultAction = await _projectsRequestService.DeleteProjectAsync(_token, SelectedProject.Model.Id);
             UpdatePageAsync();
             _commonViewService.CurrentOpenWindow?.Close();
             _commonViewService.ShowActionResult(resultAction, "Project deleted successfully");
@@ -268,18 +268,18 @@ namespace TaskManager.Client.ViewModels
                 return;
             }
 
-            var resultAction = await _projectsRequestService.AddUsersToProject(_token, SelectedProject.Model.Id, SelectedUsersForProject.Select(u => u.Id));
-            _commonViewService.ShowActionResult(resultAction, "New users are added to project successfully");
+            var resultAction = await _projectsRequestService.AddUsersToProjectAsync(_token, SelectedProject.Model.Id, SelectedUsersForProject.Select(u => u.Id));
+            _commonViewService.ShowActionResult(resultAction.StatusCode, "New users are added to project successfully");
             await UpdatePageAsync();
             _commonViewService.CurrentOpenWindow?.Close();
         }        
         private async void DeleteUsersFromProjectAsync()
         {
             var users = SelectedUsersForProject.Select(u => u.Email);
-            var resultAction = await _projectsRequestService.RemoveUsersFromProject(_token, SelectedProject.Model.Id, SelectedUsersForProject.Select(u => u.Id));
+            var resultAction = await _projectsRequestService.RemoveUsersFromProjectAsync(_token, SelectedProject.Model.Id, SelectedUsersForProject.Select(u => u.Id));
 
             var deletedUsersStr = string.Join("\n", users);
-            _commonViewService.ShowActionResult(resultAction, $"The following users were successfully deleted from the project:\n{deletedUsersStr}");
+            _commonViewService.ShowActionResult(resultAction.StatusCode, $"The following users were successfully deleted from the project:\n{deletedUsersStr}");
             await UpdatePageAsync();
         }
         private void OpenProjectDesksPage()

@@ -12,7 +12,7 @@ namespace TaskManager.Client.Services
     public abstract class CommonRequestService
     {
         public const string HOST = "http://localhost:5128/api/";
-        protected async Task<string> GetDataByUrl(HttpMethod method, string url, AuthToken token, string userName = null, string password = null,
+        protected async Task<string> GetDataByUrlAsync(HttpMethod method, string url, AuthToken token, string userName = null, string password = null,
             Dictionary<string, string> parameters = null)
         {
             var client = new HttpClient();
@@ -51,7 +51,7 @@ namespace TaskManager.Client.Services
             return await response.Content.ReadAsStringAsync();
         }
 
-        protected async Task<HttpStatusCode> SendDataByUrl(HttpMethod method, string url, AuthToken token, string data)
+        protected async Task<HttpResponseMessage> SendDataByUrlAsync(HttpMethod method, string url, AuthToken token, string data)
         {
             var result = new HttpResponseMessage();
             var client = new HttpClient();
@@ -66,10 +66,10 @@ namespace TaskManager.Client.Services
             if (method == HttpMethod.Patch)
                 result = await client.PatchAsync(url, content);
 
-            return result.StatusCode;
+            return result;
         }
 
-        protected async Task<HttpStatusCode> DeleteDataByUrl(string url, AuthToken token)
+        protected async Task<HttpStatusCode> DeleteDataByUrlAsync(string url, AuthToken token)
         {
             var result = new HttpResponseMessage();
             var client = new HttpClient();

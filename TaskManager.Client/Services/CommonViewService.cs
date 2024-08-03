@@ -17,7 +17,7 @@ namespace TaskManager.Client.Services
             if (code == System.Net.HttpStatusCode.OK)
                 ShowMessage($"{code}\n{message}");
             else
-                ShowMessage($"{code}\nSomething went wrong");
+                ShowMessage($"{code}\nSomething went wrong!");             
         }
         public void OpenWindow(Window window, BindableBase viewModel)
         {

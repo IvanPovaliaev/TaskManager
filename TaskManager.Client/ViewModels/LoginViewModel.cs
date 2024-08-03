@@ -110,7 +110,7 @@ namespace TaskManager.Client.ViewModels
                 isNewUser = true;
 
             UserPassword = passBox.Password;
-            AuthToken = await _usersRequestService.GetToken(UserLogin, UserPassword);
+            AuthToken = await _usersRequestService.GetTokenAsync(UserLogin, UserPassword);
 
             if (AuthToken == null)
             {
@@ -118,7 +118,7 @@ namespace TaskManager.Client.ViewModels
                 return;
             }
 
-            CurrentUser = await _usersRequestService.GetCurrentUser(AuthToken);
+            CurrentUser = await _usersRequestService.GetCurrentUserAsync(AuthToken);
 
             if (isNewUser && CurrentUser != null)
             {
@@ -160,9 +160,9 @@ namespace TaskManager.Client.ViewModels
             _currentWindow = (Window)window;
             UserLogin = CurrentUserCache.Login;
             UserPassword = CurrentUserCache.Password;
-            AuthToken = await _usersRequestService.GetToken(UserLogin, UserPassword);
+            AuthToken = await _usersRequestService.GetTokenAsync(UserLogin, UserPassword);
 
-            CurrentUser = await _usersRequestService.GetCurrentUser(AuthToken);
+            CurrentUser = await _usersRequestService.GetCurrentUserAsync(AuthToken);
             if (CurrentUser != null)
                 OpenMainWindow();
         }

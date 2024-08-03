@@ -25,7 +25,7 @@ namespace TaskManager.Client.Services
         {
             try
             {
-                var selectedDesk = await _desksRequestService.GetDeskById(_token, (int)deskId);
+                var selectedDesk = await _desksRequestService.GetDeskByIdAsync(_token, (int)deskId);
                 return new ModelClient<DeskModel>(selectedDesk);
             }
             catch (FormatException ex)
@@ -42,12 +42,12 @@ namespace TaskManager.Client.Services
         }
         public async Task UpdateDeskAsync(DeskModel desk)
         {
-            var resultAction = await _desksRequestService.UpdateDesk(_token, desk);
-            _commonViewService.ShowActionResult(resultAction, "Desk updated successfully");
+            var resultAction = await _desksRequestService.UpdateDeskAsync(_token, desk);
+            _commonViewService.ShowActionResult(resultAction.StatusCode, "Desk updated successfully");
         }
         public async Task DeleteDeskAsync(int deskId)
         {
-            var resultAction = await _desksRequestService.DeleteDesk(_token, deskId);
+            var resultAction = await _desksRequestService.DeleteDeskAsync(_token, deskId);
             _commonViewService.CurrentOpenWindow?.Close();
             _commonViewService.ShowActionResult(resultAction, "Desk deleted successfully");
         }

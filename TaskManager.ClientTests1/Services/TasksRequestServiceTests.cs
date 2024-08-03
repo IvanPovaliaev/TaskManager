@@ -14,14 +14,14 @@ namespace TaskManager.Client.Services.Tests
         private TasksRequestService _service;
         public TasksRequestServiceTests()
         {
-            _authToken = new UsersRequestService().GetToken("admin@admin.com", "qwerty123").Result;
+            _authToken = new UsersRequestService().GetTokenAsync("admin@admin.com", "qwerty123").Result;
             _service = new TasksRequestService();
         }
 
         [TestMethod()]
         public void GetTasksForCurrentUserTest()
         {
-            var result = _service.GetTasksForCurrentUser(_authToken).Result;
+            var result = _service.GetTasksForCurrentUserAsync(_authToken).Result;
 
             Console.WriteLine(string.Join("\n", result.Select(d => d.Name)));
 
@@ -31,7 +31,7 @@ namespace TaskManager.Client.Services.Tests
         [TestMethod()]
         public void GetTaskByIdTest()
         {
-            var result = _service.GetTaskById(_authToken, 1).Result;
+            var result = _service.GetTaskByIdAsync(_authToken, 1).Result;
 
             Console.WriteLine(result.Name);
 
@@ -41,7 +41,7 @@ namespace TaskManager.Client.Services.Tests
         [TestMethod()]
         public void GetTasksByDeskTest()
         {
-            var result = _service.GetTasksByDesk(_authToken, 1).Result;
+            var result = _service.GetTasksByDeskAsync(_authToken, 1).Result;
 
             Console.WriteLine(string.Join("\n", result.Select(d => d.Name)));
 
@@ -56,8 +56,8 @@ namespace TaskManager.Client.Services.Tests
             task.ExecutorId = 1;
             task.CreatorId = 1;
 
-            var result = _service.CreateTask(_authToken, task).Result;
-            Assert.AreEqual(HttpStatusCode.OK, result);
+            var result = _service.CreateTaskAsync(_authToken, task).Result;
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
         [TestMethod()]
@@ -69,14 +69,14 @@ namespace TaskManager.Client.Services.Tests
             task.ExecutorId = 2;
             task.CreatorId = 1;
 
-            var result = _service.UpdateTask(_authToken, task).Result;
-            Assert.AreEqual(HttpStatusCode.OK, result);
+            var result = _service.UpdateTaskAsync(_authToken, task).Result;
+            Assert.AreEqual(HttpStatusCode.OK, result.StatusCode);
         }
 
         [TestMethod()]
         public void DeleteTaskByIdTest()
         {
-            var result = _service.DeleteTask(_authToken, 3).Result;
+            var result = _service.DeleteTaskAsync(_authToken, 3).Result;
 
             Assert.AreEqual(HttpStatusCode.OK, result);
         }
