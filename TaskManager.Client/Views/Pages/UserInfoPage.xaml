@@ -9,43 +9,52 @@
       Title="UserInfoPage">
 
     <Grid>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" >
+        <StackPanel x:Name="UserStackPanel" Orientation="Vertical"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="Auto">
 
-            <Image Source="{Binding CurrentUserPhoto}"
+            <Image x:Name="UserPhoto"
+                   Source="{Binding CurrentUserPhoto}"
                    Width="200"
                    Height="200"/>
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="FirstName: " Style="{StaticResource commonTBlock}"
-                           FontWeight="Bold"/>
-                <TextBlock Text="{Binding CurrentUser.FirstName}" Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="{Binding CurrentUser.Role}"
+                           Style="{StaticResource headerTBlock}"
+                        FontWeight="Bold"
+                           TextAlignment="Center"
+                           Width="{Binding Width, ElementName=UserPhoto}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Surname: " Style="{StaticResource commonTBlock}"
-                           FontWeight="Bold"/>
-                <TextBlock Text="{Binding CurrentUser.Surname}" Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="{Binding CurrentUser}"
+                           Style="{StaticResource commonTBlock}"
+                           FontWeight="Bold"
+                           TextAlignment="Center"
+                           Width="{Binding Width, ElementName=UserPhoto}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Phone number: " Style="{StaticResource commonTBlock}"
-                           FontWeight="Bold"/>
-                <TextBlock Text="{Binding CurrentUser.Phone}" Style="{StaticResource commonTBlock}"/>
+                <TextBlock FontWeight="Bold"
+                           TextAlignment="Center"
+                           Width="{Binding Width, ElementName=UserPhoto}">
+                    
+                    <Hyperlink NavigateUri="{Binding MailToUri}">
+                        <TextBlock Style="{StaticResource commonTBlock}"
+                            Text="{Binding CurrentUser.Email}"/>
+                    </Hyperlink>
+                    
+                </TextBlock>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="E-mail: " Style="{StaticResource commonTBlock}"
-                           FontWeight="Bold"/>
-                <TextBlock Text="{Binding CurrentUser.Email}" Style="{StaticResource commonTBlock}"/>
+                <TextBlock Text="{Binding CurrentUser.Phone}"
+                           Style="{StaticResource commonTBlock}"
+                           FontWeight="Bold"
+                           TextAlignment="Center"
+                           Width="{Binding Width, ElementName=UserPhoto}"/>
             </StackPanel>
-
-
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Role: " Style="{StaticResource commonTBlock}"
-                           FontWeight="Bold"/>
-                <TextBlock Text="{Binding CurrentUser.Role}" Style="{StaticResource commonTBlock}"/>
-            </StackPanel>
-
         </StackPanel>
     </Grid>
 </Page>

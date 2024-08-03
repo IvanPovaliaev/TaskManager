@@ -100,6 +100,7 @@ namespace TaskManager.Client.ViewModels
                 RaisePropertyChanged(nameof(SelectedPage));
             }
         }
+
         private BitmapImage _currentUserPhoto;
         public BitmapImage CurrentUserPhoto
         {
@@ -110,6 +111,8 @@ namespace TaskManager.Client.ViewModels
                 RaisePropertyChanged(nameof(CurrentUserPhoto));
             }
         }
+
+        public string MailToUri => $"mailto:{CurrentUser?.Email}";
 
         #endregion
 
