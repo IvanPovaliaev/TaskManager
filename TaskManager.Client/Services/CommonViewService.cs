@@ -52,6 +52,17 @@ namespace TaskManager.Client.Services
             }
         }
 
+        public void SetPhotoForUser(UserModel model)
+        {
+            var imagePath = GetFileFromDialog(_imageDialogFilterPattern);
+
+            if (!string.IsNullOrEmpty(imagePath))
+            {
+                var imageBytes = File.ReadAllBytes(imagePath);
+                model.Photo = imageBytes;
+            }
+        }
+
         public void SetFileForTask(TaskModel model)
         {
             var filePath = GetFileFromDialog(_allFilesDialogFilterPattern);

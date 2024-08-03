@@ -25,7 +25,7 @@ namespace TaskManager.Client.ViewModels
         #endregion
 
         #region PROPERTIES
-        private CommonViewService _commonViewService { get; set; }
+        private UsersRequestService _usersRequestService { get; set; }
 
         private readonly string _userInfoButtonName = "My info";
         private readonly string _userProjectsButtonName = "My projects";
@@ -115,14 +115,14 @@ namespace TaskManager.Client.ViewModels
 
         public MainWindowViewModel(AuthToken token, UserModel currentUser, Window currentWindow = null)
         {
-            _commonViewService = new CommonViewService();
+            _usersRequestService = new UsersRequestService();
 
             Token = token;
             CurrentUser = currentUser;
             CurrentUserPhoto = CurrentUser.LoadPhoto();
             _currentWindow = currentWindow;
 
-            OpenMyInfoPageCommand = new DelegateCommand(OpenMyInfoPage);
+            OpenMyInfoPageCommand = new DelegateCommand(OpenMyInfoPageAsync);
             NavButtons.Add(_userInfoButtonName, OpenMyInfoPageCommand);
 
             OpenProjectPageCommand = new DelegateCommand(OpenProjectsPage);
@@ -143,12 +143,15 @@ namespace TaskManager.Client.ViewModels
             LogoutCommand = new DelegateCommand(Logout);
             NavButtons.Add(_logoutButtonName, LogoutCommand);
 
-            OpenMyInfoPage();
+            OpenMyInfoPageAsync();
         }
 
         #region METHODS
-        private void OpenMyInfoPage()
+        private async void OpenMyInfoPageAsync()
         {
+            var curUser = await _usersRequestService.GetCurrentUser(_token);
+            CurrentUser = curUser;
+            CurrentUserPhoto = CurrentUser.LoadPhoto();
             var page = new UserInfoPage();
             OpenPage(page, _userInfoButtonName, this);
         }

@@ -1,6 +1,7 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using TaskManager.Client.Models;
 using TaskManager.Client.Services;
@@ -20,6 +21,7 @@ namespace TaskManager.Client.ViewModels
         public DelegateCommand OpenSelectUsersFromExcelCommand { get; private set; }
         public DelegateCommand GetUsersFromExcelCommand { get; private set; }
         public DelegateCommand AddUsersFromExcelCommand { get; private set; }
+        public DelegateCommand SelectPhotoForUserCommand { get; private set; }
         #endregion
 
         #region PROPERTIES
@@ -30,8 +32,8 @@ namespace TaskManager.Client.ViewModels
         private CommonViewService _commonViewService { get; set; }
         private ExcelService _excelService { get; set; }
 
-        private List<UserModel> _allUsers;
-        public List<UserModel> AllUsers
+        private List<UserModelClient> _allUsers;
+        public List<UserModelClient> AllUsers
         {
             get => _allUsers;
             set
@@ -63,8 +65,8 @@ namespace TaskManager.Client.ViewModels
             }
         }
 
-        private UserModel _selectedUser;
-        public UserModel SelectedUser
+        private UserModelClient _selectedUser;
+        public UserModelClient SelectedUser
         {
             get => _selectedUser;
             set
@@ -103,6 +105,7 @@ namespace TaskManager.Client.ViewModels
             OpenSelectUsersFromExcelCommand =  new DelegateCommand(OpenSelectUsersFromExcel);
             GetUsersFromExcelCommand =  new DelegateCommand(GetUsersFromExcel);
             AddUsersFromExcelCommand =  new DelegateCommand(AddUsersFromExcelAsync);
+            SelectPhotoForUserCommand = new DelegateCommand(SelectPhotoForUser);
 
             usersPage.Loaded += LoadAllUsersAsync;
         }
@@ -111,7 +114,7 @@ namespace TaskManager.Client.ViewModels
         private async void LoadAllUsersAsync(object sender, RoutedEventArgs e)
         {
             var allUsers = await _usersRequestService.GetAllUsers(_authToken);
-            AllUsers = allUsers;
+            AllUsers = allUsers.Select(user => new UserModelClient(user)).ToList();
         }
         #endregion
 
@@ -128,7 +131,10 @@ namespace TaskManager.Client.ViewModels
         {
             if (userId == null) return;
             TypeActionWithUser = ClientAction.Update;
-            SelectedUser = await _usersRequestService.GetUserById(_authToken, (int)userId);
+
+            var selectedUser = await _usersRequestService.GetUserById(_authToken, (int)userId);
+
+            SelectedUser = new UserModelClient(selectedUser);
 
             var wnd = new CreateOrUpdateUserWindow();
             wnd.Owner = _ownerWindow;
@@ -137,7 +143,7 @@ namespace TaskManager.Client.ViewModels
         private void OpenNewUser()
         {
             TypeActionWithUser = ClientAction.Create;
-            SelectedUser = new UserModel();
+            SelectedUser = new UserModelClient(new UserModel());
 
             var wnd = new CreateOrUpdateUserWindow();
             wnd.Owner = _ownerWindow;
@@ -157,10 +163,10 @@ namespace TaskManager.Client.ViewModels
             switch (TypeActionWithUser)
             {
                 case ClientAction.Create:
-                    await _usersRequestService.CreateUser(_authToken, SelectedUser);
+                    await _usersRequestService.CreateUser(_authToken, SelectedUser.Model);
                     break;
                 case ClientAction.Update:
-                    await _usersRequestService.UpdateUser(_authToken, SelectedUser);
+                    await _usersRequestService.UpdateUser(_authToken, SelectedUser.Model);
                     break;
             }
             UpdatePage();            
@@ -188,6 +194,17 @@ namespace TaskManager.Client.ViewModels
             }
             UpdatePage();
         }
+
+        public void SelectPhotoForUser()
+        {
+            if (SelectedUser?.Model == null) return;
+
+            var selectedUser = SelectedUser.Model;
+            _commonViewService.SetPhotoForUser(selectedUser);
+
+            SelectedUser = new UserModelClient(selectedUser);
+        }
+
         #endregion
     }
 }

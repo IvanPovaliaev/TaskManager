@@ -28,37 +28,52 @@
             <ItemsControl ItemsSource="{Binding AllUsers}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Style="{StaticResource userBorderPanel}">
+                        
+                        <Border Style="{StaticResource userBorderPanel}">                            
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-                                
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding}"/>
-                                </StackPanel>
-                                
-                                <TextBlock Grid.Row="1" Grid.Column="0"
-                                           Text="{Binding Role}"/>
-                                <TextBlock Grid.Row="2" Grid.Column="0"
-                                           Text="{Binding Email}"/>
-                                <Button Grid.Row="0" Grid.Column="1"
-                                        Content="Edit" Command="{Binding Path=DataContext.OpenUpdateUserCommand, 
+
+                                <Image Grid.Column="0"
+                                       Source="{Binding Photo}"
+                                       Width="90"
+                                       Height="90"/>
+
+                                <Grid Grid.Column="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="100"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Model}"/>
+                                    </StackPanel>
+
+                                    <TextBlock Grid.Row="1" Grid.Column="0"
+                                               Text="{Binding Model.Role}"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="0"
+                                               Text="{Binding Model.Email}"/>
+                                    <Button Grid.Row="0" Grid.Column="1"
+                                            Content="Edit"
+                                            Command="{Binding Path=DataContext.OpenUpdateUserCommand,
                                         RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
-                                        CommandParameter="{Binding Id}"
-                                        Style="{StaticResource commonBtn}"/>
-                                <Button Grid.Row="2" Grid.Column="1"
-                                        Content="Delete" Command="{Binding Path=DataContext.DeleteUserCommand, 
+                                            CommandParameter="{Binding Model.Id}"
+                                            Style="{StaticResource commonBtn}"/>
+                                    <Button Grid.Row="2" Grid.Column="1"
+                                            Content="Delete"
+                                            Command="{Binding Path=DataContext.DeleteUserCommand, 
                                         RelativeSource={RelativeSource AncestorType=ItemsControl}}" 
-                                        CommandParameter="{Binding Id}"
-                                        Style="{StaticResource commonBtnRed}"/>
-                            </Grid>
+                                            CommandParameter="{Binding Model.Id}"
+                                            Style="{StaticResource commonBtnRed}"/>
+                                </Grid>
+                            </Grid>                            
                         </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

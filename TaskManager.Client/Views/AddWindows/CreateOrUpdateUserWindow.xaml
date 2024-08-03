@@ -8,7 +8,7 @@
         xmlns:commonModels="clr-namespace:TaskManager.Common.Models;assembly=TaskManager.Common.Models"
         mc:Ignorable="d"
         Title="CreateOrUpdateUserWindow"
-        Height="400" Width="350"
+        Height="600" Width="350"
         WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <ObjectDataProvider x:Key="dataFromEnum" MethodName="GetValues"
@@ -30,7 +30,7 @@
                       VerticalScrollBarVisibility="Auto">
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.5*"/>
+                    <ColumnDefinition Width="0.4*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -40,6 +40,7 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0"
@@ -47,7 +48,7 @@
                            Style="{StaticResource commonTBlock}" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <TextBox Grid.Row="0" Grid.Column="1"
-                         Text="{Binding SelectedUser.FirstName}" 
+                         Text="{Binding SelectedUser.Model.FirstName}" 
                          Style="{StaticResource commonTBox}" 
                          HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
 
@@ -56,7 +57,7 @@
                            Style="{StaticResource commonTBlock}" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <TextBox Grid.Row="1" Grid.Column="1"
-                         Text="{Binding SelectedUser.Surname}" 
+                         Text="{Binding SelectedUser.Model.Surname}" 
                          Style="{StaticResource commonTBox}" 
                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
@@ -64,7 +65,7 @@
                            Style="{StaticResource commonTBlock}" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <TextBox Grid.Row="2" Grid.Column="1"
-                         Text="{Binding SelectedUser.Phone}"
+                         Text="{Binding SelectedUser.Model.Phone}"
                          Style="{StaticResource commonTBox}" 
                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
@@ -72,14 +73,14 @@
                            Style="{StaticResource commonTBlock}" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <TextBox Grid.Row="3" Grid.Column="1"
-                         Text="{Binding SelectedUser.Email}"
+                         Text="{Binding SelectedUser.Model.Email}"
                          Style="{StaticResource commonTBox}" 
                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Password: " Style="{StaticResource commonTBlock}" 
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <TextBox Grid.Row="4" Grid.Column="1"
-                         Text="{Binding SelectedUser.Password}"
+                         Text="{Binding SelectedUser.Model.Password}"
                          Style="{StaticResource commonTBox}" 
                          HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
@@ -88,7 +89,26 @@
                            HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <ComboBox  Grid.Row="5" Grid.Column="1"
                            ItemsSource="{Binding Source={StaticResource dataFromEnum}}" 
-                           SelectedItem="{Binding SelectedUser.Role}"/>
+                           SelectedItem="{Binding SelectedUser.Model.Role}"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"/>
+
+                <TextBlock Grid.Row="6" Grid.Column="0"
+                           Text="Photo: "
+                           Style="{StaticResource commonTBlock}"
+                           HorizontalAlignment="Right"/>
+
+                <Grid Grid.Row="6" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Image Grid.Row="0" Source="{Binding SelectedUser.Photo}"/>
+                    <Button Grid.Row="1" Content="Select"
+                            Command="{Binding SelectPhotoForUserCommand}"
+                            Style="{StaticResource commonBtn}"/>
+                </Grid>
+
             </Grid>
         </ScrollViewer>
         <Button Grid.Row="2" Content="Save"
