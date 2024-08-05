@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TaskManager.API.Models.Data;
 using TaskManager.API.Models.Services;
 using TaskManager.Common.Models;
+using TaskManager.Common.Models.Services;
 
 namespace TaskManager.API.Controllers
 {
@@ -17,11 +18,13 @@ namespace TaskManager.API.Controllers
     {
         private readonly UsersService _usersService;
         private readonly DesksService _desksService;
+        private readonly ValidationService _validationService;
 
         public DesksController(ApplicationContext db)
         {
             _usersService = new UsersService(db);
             _desksService = new DesksService(db);
+            _validationService = new ValidationService();
         }
 
         [HttpGet]
@@ -60,6 +63,9 @@ namespace TaskManager.API.Controllers
             if (user == null) return Unauthorized();
             if (model == null) return BadRequest();
 
+            var isCorrectInputData = _validationService.IsCorrectDeskInputData(model, out var messages);
+            if (!isCorrectInputData) return BadRequest(messages);
+
             model.AuthorId = user.Id;
 
             var result = _desksService.Create(model);
@@ -73,6 +79,9 @@ namespace TaskManager.API.Controllers
 
             if (user == null) return Unauthorized();
             if (deskModel == null) return BadRequest();
+
+            var isCorrectInputData = _validationService.IsCorrectDeskInputData(deskModel, out var messages);
+            if (!isCorrectInputData) return BadRequest(messages);
 
             var result = _desksService.Update(id, deskModel);
             return result ? Ok() : NotFound();

@@ -13,19 +13,16 @@ namespace TaskManager.Client.ViewModels
 {
     public class LoginViewModel : BindableBase
     {
-        private UsersRequestService _usersRequestService { get; set; }  
-        private CommonViewService _commonViewService { get; set; }
-
         #region COMMANDS
         public DelegateCommand<object> GetUserFromDBCommand { get; private set; }
         public DelegateCommand<object> LoginFromCacheCommand { get; private set; }
         #endregion
 
         #region PROPERIES
-        private string _cachePath = Path.GetTempPath() + "userTaskManager.txt";
-
-        private Window _currentWindow;
-
+        private UsersRequestService _usersRequestService { get; set; }
+        private CommonViewService _commonViewService { get; set; }
+        private string _cachePath { get; set; } = Path.GetTempPath() + "userTaskManager.txt";
+        private Window _currentWindow {  get; set; }
         public string UserLogin { get; set; }
         public string UserPassword { get; private set; }
 

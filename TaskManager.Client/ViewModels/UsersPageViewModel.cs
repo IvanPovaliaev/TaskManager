@@ -9,6 +9,7 @@ using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
 using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
+using TaskManager.Common.Models.Services;
 
 namespace TaskManager.Client.ViewModels
 {
@@ -31,6 +32,7 @@ namespace TaskManager.Client.ViewModels
         private const string _excelDialogFilterPattern = "Excel Files(.xls)|*.xls| Excel Files(.xlsx)|*.xlsx| Excel Files(*.xlsm)|*.xlsm";
         private UsersRequestService _usersRequestService { get; set; }
         private CommonViewService _commonViewService { get; set; }
+        private ValidationService _validationService { get; set; }
         private ExcelService _excelService { get; set; }
 
         private List<UserModelClient> _allUsers;
@@ -98,6 +100,7 @@ namespace TaskManager.Client.ViewModels
             _usersRequestService = new UsersRequestService();
             _commonViewService = new CommonViewService();
             _excelService = new ExcelService();
+            _validationService = new ValidationService();
 
             OpenUpdateUserCommand =  new DelegateCommand<object>(OpenUpdateUserAsync);
             OpenNewUserCommand =  new DelegateCommand(OpenNewUser);
@@ -156,8 +159,7 @@ namespace TaskManager.Client.ViewModels
             {
                 await _usersRequestService.DeleteUserAsync(_authToken, (int)userId);
                 UpdatePage();
-            }
-                
+            }                
         }
         private async void CreateOrUpdateUser()
         {
@@ -174,13 +176,29 @@ namespace TaskManager.Client.ViewModels
 
         private async Task CreateUserAsync()
         {
-            var resultAction = await _usersRequestService.CreateUserAsync(_authToken, SelectedUser.Model);          
+            var isCorrectInput = _validationService.IsCorrectUserInputData(SelectedUser.Model, out var messages);
+
+            if (!isCorrectInput)
+            {
+                _commonViewService.ShowMessage(string.Join("\n", messages));
+                return;
+            }
+
+            var resultAction = await _usersRequestService.CreateUserAsync(_authToken, SelectedUser.Model);
 
             _commonViewService.ShowActionResult(resultAction.StatusCode, "New user created successfully");
             if (resultAction.IsSuccessStatusCode) UpdatePage();
         }
         public async Task UpdateUserAsync()
         {
+            var isCorrectInput = _validationService.IsCorrectUserInputData(SelectedUser.Model, out var messages);
+
+            if (!isCorrectInput)
+            {
+                _commonViewService.ShowMessage(string.Join("\n", messages));
+                return;
+            }
+
             var resultAction = await _usersRequestService.UpdateUserAsync(_authToken, SelectedUser.Model);
 
             _commonViewService.ShowActionResult(resultAction.StatusCode, "User updated successfully");
@@ -195,7 +213,7 @@ namespace TaskManager.Client.ViewModels
         }
         private void GetUsersFromExcel()
         {
-            var filePath = _commonViewService.GetFileFromDialog(_excelDialogFilterPattern);
+            var filePath = _commonViewService.GetFilePathFromDialog(_excelDialogFilterPattern);
 
             if (string.IsNullOrEmpty(filePath)) return;
 

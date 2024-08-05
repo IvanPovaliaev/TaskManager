@@ -10,6 +10,7 @@ using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
 using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
+using TaskManager.Common.Models.Services;
 
 namespace TaskManager.Client.ViewModels
 {
@@ -36,6 +37,7 @@ namespace TaskManager.Client.ViewModels
         private ProjectsRequestService _projectsRequestService { get; set; }
         private CommonViewService _commonViewService { get; set; }
         private MainWindowViewModel _mainWindowViewModel { get; set; }
+        private ValidationService _validationService { get; set; }
 
         private UserModel _currentUser;
         public UserModel CurrentUser
@@ -112,7 +114,8 @@ namespace TaskManager.Client.ViewModels
         {           
             _commonViewService = new CommonViewService();
             _projectsRequestService = new ProjectsRequestService();
-            _usersRequestService = new UsersRequestService();            
+            _usersRequestService = new UsersRequestService();   
+            _validationService = new ValidationService();
 
             _token = token;       
             _ownerWindow = mainWindowVM.CurrentWindow;
@@ -134,10 +137,7 @@ namespace TaskManager.Client.ViewModels
         }
 
         #region METHODS
-        private async Task InitializeCurrentUserAsync()
-        {
-            CurrentUser = await _usersRequestService.GetCurrentUserAsync(_token);
-        }
+        private async Task InitializeCurrentUserAsync() => CurrentUser = await _usersRequestService.GetCurrentUserAsync(_token);
         private async Task InitializeUserProjectsAsync()
         {
             var userProjects = (await _projectsRequestService.GetAllProjectsAsync(_token))
@@ -188,9 +188,9 @@ namespace TaskManager.Client.ViewModels
         {
             SelectedProject = await GetProjectClientByIdAsync(projectId);
 
-            var adminId = await _usersRequestService.GetProjectUserAdmin(_token, CurrentUser.Id);
+            var adminId = await _usersRequestService.GetProjectUserAdminAsync(_token, CurrentUser.Id);
             
-            if (adminId != SelectedProject.Model.AdminId)
+            if (adminId != SelectedProject.Model.AdminId && CurrentUser.Role != UserRole.Admin)
             {
                 _commonViewService.ShowMessage("You are not admin!");
                 return;
@@ -202,10 +202,7 @@ namespace TaskManager.Client.ViewModels
 
             _commonViewService.OpenWindow(window, this);
         }
-        private async void ShowProjectInfoAsync(object projectId)
-        {
-            SelectedProject = await GetProjectClientByIdAsync(projectId);
-        }
+        private async void ShowProjectInfoAsync(object projectId) => SelectedProject = await GetProjectClientByIdAsync(projectId);
         private async Task<ModelClient<ProjectModel>> GetProjectClientByIdAsync(object projectId)
         {
             try
@@ -229,23 +226,43 @@ namespace TaskManager.Client.ViewModels
                     await UpdateProjectAsync();
                     break;
             }
-            await UpdatePageAsync();  
-            _commonViewService.CurrentOpenWindow?.Close();
         }
         private async Task CreateProjectAsync()
         {
+            var isCorrectInput = _validationService.IsCorrectProjectInputData(SelectedProject.Model, out var messages);
+
+            if (!isCorrectInput)
+            {
+                _commonViewService.ShowMessage(string.Join("\n", messages));
+                return;
+            }
+
             var resultAction = await _projectsRequestService.CreateProjectAsync(_token, SelectedProject.Model);
             _commonViewService.ShowActionResult(resultAction.StatusCode, "New project created successfully");
+
+            await UpdatePageAsync();
+            _commonViewService.CurrentOpenWindow?.Close();
         }
         private async Task UpdateProjectAsync()
         {
+            var isCorrectInput = _validationService.IsCorrectProjectInputData(SelectedProject.Model, out var messages);
+
+            if (!isCorrectInput)
+            {
+                _commonViewService.ShowMessage(string.Join("\n", messages));
+                return;
+            }
+
             var resultAction = await _projectsRequestService.UpdateProjectAsync(_token, SelectedProject.Model);
             _commonViewService.ShowActionResult(resultAction.StatusCode, "Project updated successfully");
+
+            await UpdatePageAsync();
+            _commonViewService.CurrentOpenWindow?.Close();
         }
         private async void DeleteProjectAsync()
         {
             var resultAction = await _projectsRequestService.DeleteProjectAsync(_token, SelectedProject.Model.Id);
-            UpdatePageAsync();
+            await UpdatePageAsync();
             _commonViewService.CurrentOpenWindow?.Close();
             _commonViewService.ShowActionResult(resultAction, "Project deleted successfully");
         }
@@ -270,6 +287,7 @@ namespace TaskManager.Client.ViewModels
 
             var resultAction = await _projectsRequestService.AddUsersToProjectAsync(_token, SelectedProject.Model.Id, SelectedUsersForProject.Select(u => u.Id));
             _commonViewService.ShowActionResult(resultAction.StatusCode, "New users are added to project successfully");
+
             await UpdatePageAsync();
             _commonViewService.CurrentOpenWindow?.Close();
         }        

@@ -12,6 +12,7 @@ using TaskManager.Client.Views.AddWindows;
 using TaskManager.Client.Views.Components;
 using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
+using TaskManager.Common.Models.Services;
 
 namespace TaskManager.Client.ViewModels
 {
@@ -34,6 +35,7 @@ namespace TaskManager.Client.ViewModels
         private TasksRequestService _tasksRequestService { get; set; }
         private ProjectsRequestService _projectsRequestService { get; set; }
         private CommonViewService _commonViewService { get; set; }
+        private ValidationService _validationService { get; set; }
 
         private Dictionary<string, List<TaskClient>> _taskByColumns;
         public Dictionary<string, List<TaskClient>> TasksByColumns
@@ -104,6 +106,7 @@ namespace TaskManager.Client.ViewModels
             _tasksRequestService = new TasksRequestService();
             _commonViewService = new CommonViewService();
             _projectsRequestService = new ProjectsRequestService();
+            _validationService = new ValidationService();
 
             OpenNewTaskCommand = new DelegateCommand(OpenNewTask);
             OpenUpdateTaskCommand = new DelegateCommand<object>(OpenUpdateTask);
@@ -258,8 +261,6 @@ namespace TaskManager.Client.ViewModels
                     await UpdateTaskAsync();
                     break;
             }
-            UpdatePage();
-            _commonViewService.CurrentOpenWindow?.Close();
         }
         private void UpdatePage()
         {
@@ -290,19 +291,42 @@ namespace TaskManager.Client.ViewModels
         }
         private async Task CreateTaskAsync()
         {
+            var isCorrectInput = _validationService.IsCorrectTaskInputData(SelectedTask.Model, out var messages);
+
+            if (!isCorrectInput)
+            {
+                _commonViewService.ShowMessage(string.Join("\n", messages));
+                return;
+            }
+
             SelectedTask.Model.DeskId = _desk.Id;
             SelectedTask.Model.Column = _desk.Columns.FirstOrDefault();
+
             if (SelectedTaskExecutor != null)
                 SelectedTask.Model.ExecutorId = SelectedTaskExecutor.Id;
 
             var resultAction = await _tasksRequestService.CreateTaskAsync(_token, SelectedTask.Model);
             _commonViewService.ShowActionResult(resultAction.StatusCode, "New task created successfully");
+
+            UpdatePage();
+            _commonViewService.CurrentOpenWindow?.Close();
         }
         public async Task UpdateTaskAsync()
         {
+            var isCorrectInput = _validationService.IsCorrectTaskInputData(SelectedTask.Model, out var messages);
+
+            if (!isCorrectInput)
+            {
+                _commonViewService.ShowMessage(string.Join("\n", messages));
+                return;
+            }
+
             SelectedTask.Model.ExecutorId = SelectedTaskExecutor.Id;
             var resultAction = await _tasksRequestService.UpdateTaskAsync(_token, SelectedTask.Model);
             _commonViewService.ShowActionResult(resultAction.StatusCode, "Task updated successfully");
+
+            UpdatePage();
+            _commonViewService.CurrentOpenWindow?.Close();
         }
         private async void DeleteTaskAsync()
         {

@@ -26,7 +26,7 @@ namespace TaskManager.Client.Services
             window.ShowDialog();
         }
 
-        public string GetFileFromDialog(string filter)
+        public string GetFilePathFromDialog(string filter)
         {
             var filepath = string.Empty;
 
@@ -43,7 +43,7 @@ namespace TaskManager.Client.Services
 
         public void SetImageForObject(CommonModel model)
         {
-            var imagePath = GetFileFromDialog(_imageDialogFilterPattern);
+            var imagePath = GetFilePathFromDialog(_imageDialogFilterPattern);
 
             if (!string.IsNullOrEmpty(imagePath))
             {
@@ -54,7 +54,7 @@ namespace TaskManager.Client.Services
 
         public void SetPhotoForUser(UserModel model)
         {
-            var imagePath = GetFileFromDialog(_imageDialogFilterPattern);
+            var imagePath = GetFilePathFromDialog(_imageDialogFilterPattern);
 
             if (!string.IsNullOrEmpty(imagePath))
             {
@@ -65,7 +65,7 @@ namespace TaskManager.Client.Services
 
         public void SetFileForTask(TaskModel model)
         {
-            var filePath = GetFileFromDialog(_allFilesDialogFilterPattern);
+            var filePath = GetFilePathFromDialog(_allFilesDialogFilterPattern);
 
             if (!string.IsNullOrEmpty(filePath))
             {

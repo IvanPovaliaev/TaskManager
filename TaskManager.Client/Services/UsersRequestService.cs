@@ -70,7 +70,7 @@ namespace TaskManager.Client.Services
             return await SendDataByUrlAsync(HttpMethod.Patch, $"{_usersControllerUrl}{user.Id}", token, userJson);
         }
 
-        public async Task<int?> GetProjectUserAdmin(AuthToken token, int userId)
+        public async Task<int?> GetProjectUserAdminAsync(AuthToken token, int userId)
         {
             var response = await GetDataByUrlAsync(HttpMethod.Get, $"{_usersControllerUrl}{userId}/admin", token);
             return int.TryParse(response, out var result) ? result : null;

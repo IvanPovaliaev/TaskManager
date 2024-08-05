@@ -8,6 +8,7 @@ using TaskManager.API.Models;
 using TaskManager.API.Models.Data;
 using TaskManager.API.Models.Services;
 using TaskManager.Common.Models;
+using TaskManager.Common.Models.Services;
 
 namespace TaskManager.API.Controllers
 {
@@ -19,11 +20,13 @@ namespace TaskManager.API.Controllers
         private readonly ApplicationContext _db;
         private readonly UsersService _usersService;
         private readonly ProjectsService _projectService;
+        private readonly ValidationService _validationService;
         public ProjectsController(ApplicationContext db)
         {
             _db = db;
             _usersService = new UsersService(db);
             _projectService = new ProjectsService(db);
+            _validationService = new ValidationService();
         }
 
         [HttpGet]
@@ -45,9 +48,14 @@ namespace TaskManager.API.Controllers
         {
             if (projectModel == null) return BadRequest();
 
+            var isCorrectInputData = _validationService.IsCorrectProjectInputData(projectModel, out var messages);
+
+            if (!isCorrectInputData) return BadRequest(messages);
+
             var user = _usersService.GetUser(HttpContext.User.Identity.Name);
 
             if (user == null) return Unauthorized();
+
 
             if (user.Role == UserRole.Admin || user.Role == UserRole.Editor)
             {
@@ -68,6 +76,10 @@ namespace TaskManager.API.Controllers
         {
             if (projectModel != null)
             {
+                var isCorrectInputData = _validationService.IsCorrectProjectInputData(projectModel, out var messages);
+
+                if (!isCorrectInputData) return BadRequest(messages);
+
                 var user = _usersService.GetUser(HttpContext.User.Identity.Name);
                 if (user != null)
                 {

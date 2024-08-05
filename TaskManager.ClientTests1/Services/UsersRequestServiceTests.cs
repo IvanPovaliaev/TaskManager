@@ -80,7 +80,7 @@ namespace TaskManager.Client.Services.Tests
         [TestMethod()]
         public void GetProjectUserAdminTest()
         {
-            var id = _service.GetProjectUserAdmin(_token, 1).Result;
+            var id = _service.GetProjectUserAdminAsync(_token, 1).Result;
 
             Assert.AreEqual(2, id);
         }

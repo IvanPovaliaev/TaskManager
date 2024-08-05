@@ -8,6 +8,7 @@ using TaskManager.Common.Models;
 using Prism.Commands;
 using System.Windows;
 using System.Collections.ObjectModel;
+using TaskManager.Common.Models.Services;
 
 namespace TaskManager.Client.ViewModels
 {
@@ -29,6 +30,7 @@ namespace TaskManager.Client.ViewModels
         private UsersRequestService _usersRequestService { get; set; }
         private CommonViewService _commonViewService { get; set; }
         private DesksViewService _deskViewService { get; set; }
+        private ValidationService _validationService { get; set; }
 
         private ClientAction _typeActionWithDesk;
         public ClientAction TypeActionWithDesk
@@ -100,6 +102,7 @@ namespace TaskManager.Client.ViewModels
             _usersRequestService = new UsersRequestService();
             _commonViewService = new CommonViewService();
             _deskViewService = new DesksViewService(token, _desksRequestService, _commonViewService);
+            _validationService = new ValidationService();
 
             InitializeAllDesksAsync();
 
@@ -135,6 +138,14 @@ namespace TaskManager.Client.ViewModels
         }
         private async void OpenUpdateDeskAsync()
         {
+            var isCorrectInput = _validationService.IsCorrectDeskInputData(SelectedDesk.Model, out var messages);
+
+            if (!isCorrectInput)
+            {
+                _commonViewService.ShowMessage(string.Join("\n", messages));
+                return;
+            }
+
             TypeActionWithDesk = ClientAction.Update;
 
             SelectedDesk = await _deskViewService.GetDeskClientByIdAsync(SelectedDesk.Model.Id);

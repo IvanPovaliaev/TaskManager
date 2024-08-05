@@ -10,6 +10,7 @@ using TaskManager.Client.Services;
 using TaskManager.Client.Views.AddWindows;
 using TaskManager.Client.Views.Pages;
 using TaskManager.Common.Models;
+using TaskManager.Common.Models.Services;
 
 namespace TaskManager.Client.ViewModels
 {
@@ -35,6 +36,7 @@ namespace TaskManager.Client.ViewModels
         private UsersRequestService _usersRequestService { get; set; }
         private CommonViewService _commonViewService { get; set; }
         private DesksViewService _deskViewService { get; set; }
+        private ValidationService _validationService { get; set; }
 
         private UserModel _currentUser;
         public UserModel CurrentUser
@@ -109,6 +111,7 @@ namespace TaskManager.Client.ViewModels
             _usersRequestService = new UsersRequestService();
             _commonViewService = new CommonViewService();
             _deskViewService = new DesksViewService(token, _desksRequestService, _commonViewService);
+            _validationService = new ValidationService();
 
             InitializeCurrentUserAsync();
             LoadProjectDesksAsync();
@@ -142,7 +145,6 @@ namespace TaskManager.Client.ViewModels
         private async Task UpdatePageAsync()
         {
             await LoadProjectDesksAsync();
-            SelectedDesk = null;
         }
         private void OpenNewDesk()
         {
@@ -158,7 +160,7 @@ namespace TaskManager.Client.ViewModels
         {            
             SelectedDesk = await _deskViewService.GetDeskClientByIdAsync(deskId);
 
-            if (CurrentUser.Id != SelectedDesk.Model.Id)
+            if (CurrentUser.Id != SelectedDesk.Model.AuthorId && CurrentUser.Role != UserRole.Admin)
             {
                 _commonViewService.ShowMessage("You are not admin!");
                 return;
@@ -183,20 +185,30 @@ namespace TaskManager.Client.ViewModels
                     break;
             }
             await UpdatePageAsync();
-            _commonViewService.CurrentOpenWindow?.Close();
         }
         private async Task CreateDeskAsync()
         {
+            var isCorrectInput = _validationService.IsCorrectDeskInputData(SelectedDesk.Model, out var messages);
+
+            if (!isCorrectInput)
+            {
+                _commonViewService.ShowMessage(string.Join("\n", messages));
+                return;
+            }
+
             SelectedDesk.Model.Columns = ColumnsForNewDesk.Select(c => c.Value).ToArray();
             SelectedDesk.Model.ProjectId = _project.Id;
 
             var resultAction = await _desksRequestService.CreateDeskAsync(_token, SelectedDesk.Model);
             _commonViewService.ShowActionResult(resultAction.StatusCode, "New desk created successfully");
+
+            await UpdatePageAsync();
+            _commonViewService.CurrentOpenWindow?.Close();
         }
         private async void DeleteDeskAsync()
         {
             await _deskViewService.DeleteDeskAsync(SelectedDesk.Model.Id);
-            UpdatePageAsync();
+            await UpdatePageAsync();
         }
         private void AddNewColumnItem() => ColumnsForNewDesk.Add(new ColumnBindingHelper("Column"));
         private void RemoveColumnItem(object item)

@@ -15,14 +15,12 @@ namespace TaskManager.Client.Services
         public async Task<List<TaskModel>> GetTasksForCurrentUserAsync(AuthToken token)
         {
             var response = await GetDataByUrlAsync(HttpMethod.Get, $"{_tasksControllerUrl}user", token);
-            var tasks = JsonConvert.DeserializeObject<List<TaskModel>>(response);
-            return tasks;
+            return JsonConvert.DeserializeObject<List<TaskModel>>(response);
         }
         public async Task<TaskModel> GetTaskByIdAsync(AuthToken token, int taskId)
         {
             var response = await GetDataByUrlAsync(HttpMethod.Get, $"{_tasksControllerUrl}{taskId}", token);
-            var task = JsonConvert.DeserializeObject<TaskModel>(response);
-            return task;
+            return JsonConvert.DeserializeObject<TaskModel>(response);
         }
 
         public async Task<List<TaskModel>> GetTasksByDeskAsync(AuthToken token, int deskId)
@@ -31,8 +29,7 @@ namespace TaskManager.Client.Services
             parameters["deskId"] = deskId.ToString();
 
             var response = await GetDataByUrlAsync(HttpMethod.Get, $"{_tasksControllerUrl}", token, null, null, parameters);
-            var task = JsonConvert.DeserializeObject<List<TaskModel>>(response);
-            return task;
+            return JsonConvert.DeserializeObject<List<TaskModel>>(response);
         }
 
         public async Task<HttpResponseMessage> CreateTaskAsync(AuthToken token, TaskModel task)

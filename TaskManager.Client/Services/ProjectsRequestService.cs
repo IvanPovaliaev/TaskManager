@@ -14,15 +14,13 @@ namespace TaskManager.Client.Services
         public async Task<List<ProjectModel>> GetAllProjectsAsync(AuthToken token)
         {
             var response = await GetDataByUrlAsync(HttpMethod.Get, _projectsControllerUrl, token);
-            var projects = JsonConvert.DeserializeObject<List<ProjectModel>>(response);
-            return projects;
+            return JsonConvert.DeserializeObject<List<ProjectModel>>(response);
         }
 
         public async Task<ProjectModel> GetProjectByIdAsync(AuthToken token, int projectId)
         {
             var response = await GetDataByUrlAsync(HttpMethod.Get, $"{_projectsControllerUrl}{projectId}", token);
-            var project = JsonConvert.DeserializeObject<ProjectModel>(response);
-            return project;
+            return JsonConvert.DeserializeObject<ProjectModel>(response);
         }
 
         public async Task<HttpResponseMessage> CreateProjectAsync(AuthToken token, ProjectModel project)

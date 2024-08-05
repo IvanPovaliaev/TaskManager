@@ -182,12 +182,11 @@ namespace TaskManager.Client.ViewModels
         private void Logout()
         {
             var question = MessageBox.Show("Are you sure you want to logout?", "Logout", MessageBoxButton.YesNo);
-            if (question == MessageBoxResult.Yes)
-            {
-                var login = new Login();
-                login.Show();
-                _currentWindow?.Close();
-            }
+            if (question != MessageBoxResult.Yes) return;
+
+            var login = new Login();
+            login.Show();
+            _currentWindow?.Close();
         }
 
         private void OpenUsersManagement()
@@ -196,7 +195,6 @@ namespace TaskManager.Client.ViewModels
             var model = new UsersPageViewModel(_token, page, this);
             OpenPage(page, _manageUsersButtonName, model);
         }
-
         #endregion
 
         public void OpenPage(Page page, string pageName, BindableBase viewModel)

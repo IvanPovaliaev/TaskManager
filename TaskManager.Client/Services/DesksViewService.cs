@@ -5,6 +5,7 @@ using System.Windows;
 using TaskManager.Client.Models;
 using TaskManager.Client.Views.AddWindows;
 using TaskManager.Common.Models;
+using TaskManager.Common.Models.Services;
 
 namespace TaskManager.Client.Services
 {
@@ -12,13 +13,15 @@ namespace TaskManager.Client.Services
     {
         private AuthToken _token { get; set; }
         private CommonViewService _commonViewService { get; set; }
-        private DesksRequestService _desksRequestService { get; set; }        
+        private DesksRequestService _desksRequestService { get; set; }    
+        private ValidationService _validationService { get; set; }
 
         public DesksViewService(AuthToken token, DesksRequestService desksRequestService, CommonViewService commonViewService)
         {
             _token = token;
             _desksRequestService = desksRequestService;
             _commonViewService = commonViewService;
+            _validationService = new ValidationService();
         }
 
         public async Task<ModelClient<DeskModel>> GetDeskClientByIdAsync(object deskId)
@@ -42,8 +45,17 @@ namespace TaskManager.Client.Services
         }
         public async Task UpdateDeskAsync(DeskModel desk)
         {
+            var isCorrectInput = _validationService.IsCorrectDeskInputData(desk, out var messages);
+
+            if (!isCorrectInput)
+            {
+                _commonViewService.ShowMessage(string.Join("\n", messages));
+                return;
+            }
+
             var resultAction = await _desksRequestService.UpdateDeskAsync(_token, desk);
             _commonViewService.ShowActionResult(resultAction.StatusCode, "Desk updated successfully");
+            _commonViewService.CurrentOpenWindow?.Close();
         }
         public async Task DeleteDeskAsync(int deskId)
         {

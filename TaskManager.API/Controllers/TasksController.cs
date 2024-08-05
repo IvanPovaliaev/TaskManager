@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TaskManager.API.Models.Data;
 using TaskManager.API.Models.Services;
 using TaskManager.Common.Models;
+using TaskManager.Common.Models.Services;
 
 namespace TaskManager.API.Controllers
 {
@@ -17,11 +18,13 @@ namespace TaskManager.API.Controllers
     {
         private readonly UsersService _usersService;
         private readonly TasksService _tasksService;
+        private readonly ValidationService _validationService;
 
         public TasksController(ApplicationContext db)
         {
             _usersService = new UsersService(db);
             _tasksService = new TasksService(db);
+            _validationService = new ValidationService();
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TaskModel>>> GetTasksByDesk(int deskId)
@@ -56,6 +59,9 @@ namespace TaskManager.API.Controllers
             if (user == null) return Unauthorized();
             if (model == null) return BadRequest();
 
+            var isCorrectInputData = _validationService.IsCorrectTaskInputData(model, out var messages);
+            if (!isCorrectInputData) return BadRequest(messages);
+
             model.CreatorId = user.Id;
 
             var result = _tasksService.Create(model);            
@@ -69,6 +75,9 @@ namespace TaskManager.API.Controllers
 
             if (user == null) return Unauthorized();
             if (model == null) return BadRequest();
+
+            var isCorrectInputData = _validationService.IsCorrectTaskInputData(model, out var messages);
+            if (!isCorrectInputData) return BadRequest(messages);
 
             var result = _tasksService.Update(id, model);
             return result ? Ok() : NotFound();

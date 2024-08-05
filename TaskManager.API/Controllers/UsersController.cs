@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 using TaskManager.API.Models.Data;
 using TaskManager.API.Models.Services;
 using TaskManager.Common.Models;
+using TaskManager.Common.Models.Services;
 
 namespace TaskManager.API.Controllers
-{    
+{
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
@@ -18,10 +19,13 @@ namespace TaskManager.API.Controllers
     {
         private readonly ApplicationContext _db;
         private readonly UsersService _usersService;
+        private readonly ValidationService _validationService;
+
         public UsersController(ApplicationContext db)
         {
             _db = db;
             _usersService = new UsersService(db);
+            _validationService = new ValidationService();
         }
 
         [HttpPost]
@@ -31,11 +35,14 @@ namespace TaskManager.API.Controllers
             if (_db.Users.Any(u => u.Email == userModel.Email))
                 return BadRequest("User with this email already exist!");
 
-            if (string.IsNullOrEmpty(userModel.Email))
-                return BadRequest("Empty email data");
+            if (userModel != null)
+            {
+                var isCorrectInputData = _validationService.IsCorrectUserInputData(userModel, out var messages);
 
-            if (userModel != null)           
+                if (!isCorrectInputData) return BadRequest(messages);
+
                 return _usersService.Create(userModel) ? Ok() : NotFound();
+            }                
 
             return BadRequest();
         }
@@ -44,14 +51,14 @@ namespace TaskManager.API.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult UpdateUser(int id, [FromBody] UserModel userModel)
         {
-            if (_db.Users.Any(u => u.Email == userModel.Email))
-                return BadRequest("User with this email already exist!");
-
-            if (string.IsNullOrEmpty(userModel.Email))
-                return BadRequest("Empty email data");
-
             if (userModel != null)
+            {
+                var isCorrectInputData = _validationService.IsCorrectUserInputData(userModel, out var messages);
+
+                if (!isCorrectInputData) return BadRequest(messages);
+
                 return _usersService.Update(id, userModel) ? Ok() : NotFound();
+            }               
 
             return BadRequest();
         }
