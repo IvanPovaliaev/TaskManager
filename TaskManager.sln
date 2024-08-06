@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.API", "TaskMana
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Common.Models", "TaskManager.Common.Models\TaskManager.Common.Models.csproj", "{36D4ED7A-D12F-4D27-9B27-2B4319FB7CEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.Client", "TaskManager.Client\TaskManager.Client.csproj", "{AE65343D-5785-449A-90B5-3C09F54CB55A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.Client", "TaskManager.Client\TaskManager.Client.csproj", "{AE65343D-5785-449A-90B5-3C09F54CB55A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.ClientTests1", "TaskManager.ClientTests1\TaskManager.ClientTests1.csproj", "{4C39305D-8905-4D4B-AF47-DEDE6CFC0AD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.ClientTests", "TaskManager.ClientTests1\TaskManager.ClientTests.csproj", "{4C39305D-8905-4D4B-AF47-DEDE6CFC0AD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

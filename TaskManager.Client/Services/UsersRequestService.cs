@@ -36,8 +36,15 @@ namespace TaskManager.Client.Services
         public async Task<UserModel> GetUserByIdAsync(AuthToken token, int userId)
         {
             var response = await GetDataByUrlAsync(HttpMethod.Get, $"{_usersControllerUrl}{userId}", token);
-            var user = JsonConvert.DeserializeObject<UserModel>(response);
-            return user;
+            try
+            {
+                var user = JsonConvert.DeserializeObject<UserModel>(response);
+                return user;
+            }
+            catch (JsonReaderException ex)
+            {
+                return new UserModel();
+            }                  
         }
 
         public async Task<HttpResponseMessage> CreateUserAsync(AuthToken token, UserModel user)

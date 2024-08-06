@@ -30,7 +30,7 @@ namespace TaskManager.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public IActionResult CreateUser([FromBody] UserModel userModel)
+        public IActionResult Create([FromBody] UserModel userModel)
         {
             if (_db.Users.Any(u => u.Email == userModel.Email))
                 return BadRequest("User with this email already exist!");
@@ -49,7 +49,7 @@ namespace TaskManager.API.Controllers
 
         [HttpPatch("{id}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult UpdateUser(int id, [FromBody] UserModel userModel)
+        public IActionResult Update(int id, [FromBody] UserModel userModel)
         {
             if (userModel != null)
             {
@@ -64,7 +64,7 @@ namespace TaskManager.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<UserModel> GetUser(int id)
+        public ActionResult<UserModel> Get(int id)
         {
             var user = _usersService.Get(id);
             return user == null ? NotFound() : Ok(_usersService.Get(id));
@@ -72,7 +72,7 @@ namespace TaskManager.API.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult RemoveUser(int id) => _usersService.Remove(id) ? Ok() : NotFound();
+        public IActionResult Remove(int id) => _usersService.Remove(id) ? Ok() : NotFound();
 
         [HttpGet()]
         public async Task<IEnumerable<UserModel>> GetUsers() => await _db.Users.Select(u => u.ToDto()).ToListAsync();
