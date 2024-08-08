@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskManager.Client.Views.AddWindows"
         mc:Ignorable="d"
-        Title="AddUsersToProjectWindow" Height="450" Width="800">
+        Title="AddUsersToProjectWindow"
+        Height="450"
+        Width="800"
+        WindowStartupLocation="CenterOwner">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

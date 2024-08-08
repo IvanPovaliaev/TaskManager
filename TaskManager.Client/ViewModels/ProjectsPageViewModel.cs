@@ -275,6 +275,7 @@ namespace TaskManager.Client.ViewModels
         {
             await LoadNewUsersForSelectedProjectAsync();
             var window = new AddUsersToProjectWindow();
+            window.Owner = _ownerWindow;
             _commonViewService.OpenWindow(window, this);
         }
         private async void AddUsersToProjectAsync()
