@@ -126,3 +126,15 @@ https://github.com/user-attachments/assets/e9ac5745-7e5c-4724-9324-b6262cf8cc8a
 https://github.com/user-attachments/assets/54566cc2-b2ab-49ec-adc1-31bca1c1e986
  
 </div>
+
+## Техническая часть
+
+Решение реализовано в виде **клиент-серверного приложения**:
+* Клиентаская часть реализована на `WPF` на основе маттерна `MVVM`
+* Серверная часть реализована на `Web API` на `ASP.NET CORE`
+
+Решение состоит из 4 частей:
+1. `TaskManager.API` - WEB API на ASP.NET CORE.
+2. `TaskManager.Client` - клиентская часть на WPF
+3. `TaskManager.ClientTests` - проект Unit-тестов для клиентской части
+4. `TaskManager.Common.Models` - проект библиотеки классов, содержащий общие модели для клиентской и серверной части. В данной библиотеки находится сервис для валидации данных
