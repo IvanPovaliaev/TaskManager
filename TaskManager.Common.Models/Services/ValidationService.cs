@@ -7,7 +7,7 @@ namespace TaskManager.Common.Models.Services
     {
         private const string _emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
         private const string _userNamePattern = @"^[A-Z][a-zA-Z-' ]*$";
-        private const string _phoneNumbPattern = @"^\+?\d{1,3}[ -\(]?\d{3,4}[ -\)]?\d{3}[ -]?\d{2}[ -]?\d{2}";
+        private const string _phoneNumbPattern = @"^\+?\d{1,3}(?:\s?\(?\d{1,4}\)?\s?){1,4}\d{3}[ -]?\d{2}[ -]?\d{2}";
         private const string _restrictedCharsPattern = @"[!@#$%^&*()+={}\[\]|\\:;""'<>,/?`~]";
 
         public ValidationService() { }
