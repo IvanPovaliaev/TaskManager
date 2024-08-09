@@ -163,8 +163,7 @@ https://github.com/user-attachments/assets/54566cc2-b2ab-49ec-adc1-31bca1c1e986
 
 <div " align="center">
 
-  ![image](https://github.com/user-attachments/assets/a2406ac4-52a9-4873-8441-9a27c769ffbc)
+  ![image](https://github.com/user-attachments/assets/f0576493-0f09-4bcf-83bd-0b99f1c721ab)
   ![image](https://github.com/user-attachments/assets/f276d7d1-72e8-42b2-95cf-a57822deb936)
-  ![image](https://github.com/user-attachments/assets/d7737db9-bb7a-45ff-95bf-8ed3087e4d9a)
   
 </div>
